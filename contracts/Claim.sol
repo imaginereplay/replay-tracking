@@ -5,10 +5,9 @@ import "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "lib/openzeppelin-contracts-upgradeable/contracts/security/ReentrancyGuardUpgradeable.sol";
 import "../../../extension/Multicall.sol";
 import "../../interface/airdrop/IAirdropERC20Claimable.sol";
-import "../../../external-deps/openzeppelin/metatx/ERC2771ContextUpgradeable.sol";
 import "../../../lib/MerkleProof.sol";
 
-contract AirdropERC20Claimable is Initializable, ReentrancyGuardUpgradeable, ERC2771ContextUpgradeable, Multicall, IAirdropERC20Claimable {
+contract AirdropERC20Claimable is Initializable, ReentrancyGuardUpgradeable, Multicall, IAirdropERC20Claimable {
     address public airdropTokenAddress;
     address public tokenOwner;
     uint256 public availableAmount;
