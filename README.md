@@ -41,3 +41,54 @@ The contract has several functions, including:
 **Requirements**
 
 The contract must prevent parallel execution and ensure that only one transaction is processed at a time. It must also allow admins to add tokens to user wallets, and allow the owner to set the treasurer address, add/remove admins, and set the token admin. Additionally, the contract must have a function to increment the records every x minutes.
+
+
+
+# SECURITY
+
+### Atualização do Contrato para Mitigar Ataques
+
+1. **Reentrancy Attack**:
+   - Usar um `reentrancy guard`.
+
+2. **Unprotected Self-Destruct**:
+   - Não aplicável ao contrato atual, pois não há `selfdestruct` usado.
+
+3. **Underflow/Overflow Attack**:
+   - Utilizar as verificações automáticas do Solidity 0.8.0+.
+
+4. **Unsecured Direct Transfer**:
+   - Não aplicável ao contrato atual, pois não há transferências diretas.
+
+5. **Unprotected Function**:
+   - Garantir que funções críticas tenham modificadores de acesso apropriados.
+
+6. **ník Quentin Fault Attack**:
+   - Não aplicável ao contrato atual.
+
+7. **Replay Attack**:
+   - Adicionar um nonce para rastrear transações.
+
+8. **Elevation of Privilege**:
+   - Garantir que apenas funções apropriadas sejam acessíveis por administradores.
+
+9. **Front-Running Attack**:
+   - Não aplicável ao contrato atual.
+
+10. **Timestamp Dependence**:
+    - Não aplicável ao contrato atual.
+
+11. **tx.origin Attack**:
+    - Evitar o uso de `tx.origin`.
+
+12. **Visibility Vulnerability**:
+    - Manter variáveis sensíveis privadas ou internas.
+
+13. **Delegatecall Attack**:
+    - Não aplicável ao contrato atual.
+
+14. **Phishing Attack**:
+    - Não aplicável ao contrato atual.
+
+15. **Generalized Reentrancy Attack**:
+    - Usar um `reentrancy guard`.
