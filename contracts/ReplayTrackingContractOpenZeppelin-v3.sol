@@ -230,4 +230,24 @@ contract ReplayTrackingContract is
             );
         }
     }
+
+    // Function to get consolidated records by month
+    function getConsolidatedByMonth(
+        address userID,
+        uint256 month,
+        uint256 year
+    ) public view returns (Record memory) {
+        bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
+        return consolidatedByMonth[keyMonth];
+    }
+
+    // Function to get consolidated records by year
+    function getConsolidatedByYear(address userID, uint256 year)
+        public
+        view
+        returns (Record memory)
+    {
+        bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
+        return consolidatedByYear[keyYear];
+    }
 }
