@@ -94,8 +94,11 @@ contract ReplayTrackingContract is
     mapping(bytes32 => Transaction[]) public consolidatedByYearTransactions;
 
     // Constructor function
-    constructor(address owner) Ownable(owner) Pausable() {
-        addAdmin(owner);
+    constructor() Ownable(msg.sender) Pausable() {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(ADMIN_ROLE, msg.sender);
+        emit AdminAdded(msg.sender); // Emit event to confirm role assignment
+        addAdmin(msg.sender);
     }
 
     modifier onlyAdmin() {
