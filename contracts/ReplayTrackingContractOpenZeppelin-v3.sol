@@ -250,4 +250,24 @@ contract ReplayTrackingContract is
         bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
         return consolidatedByYear[keyYear];
     }
+
+    // Function to get transactions by month
+    function getTransactionsByMonth(
+        address userID,
+        uint256 month,
+        uint256 year
+    ) public view returns (Transaction[] memory) {
+        bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
+        return consolidatedByMonthTransactions[keyMonth];
+    }
+
+    // Function to get transactions by year
+    function getTransactionsByYear(address userID, uint256 year)
+        public
+        view
+        returns (Transaction[] memory)
+    {
+        bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
+        return consolidatedByYearTransactions[keyYear];
+    }
 }
