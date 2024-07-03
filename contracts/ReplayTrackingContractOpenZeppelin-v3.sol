@@ -93,6 +93,9 @@ contract ReplayTrackingContract is
     // Mapping to store transactions grouped by user and year
     mapping(bytes32 => Transaction[]) public consolidatedByYearTransactions;
 
+    // Set to store all users
+    EnumerableSet.AddressSet private allUsers;
+
     // Constructor function
     constructor() Ownable(msg.sender) Pausable() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -116,6 +119,7 @@ contract ReplayTrackingContract is
     ) public onlyAdmin whenNotPaused nonReentrant {
         require(user != address(0), "Invalid user address");
         wallets[user] += amount;
+        allUsers.add(user);
     }
 
     // Function to update a user's balance
@@ -125,6 +129,7 @@ contract ReplayTrackingContract is
     ) public onlyAdmin whenNotPaused nonReentrant {
         require(user != address(0), "Invalid user address");
         wallets[user] = amount;
+        allUsers.add(user);
     }
 
     // Function to add an admin
@@ -180,6 +185,8 @@ contract ReplayTrackingContract is
         // Increment by year
         consolidatedByYear[keyYear].timeWatched += timeWatched;
         consolidatedByYear[keyYear].amountEarned += amountEarned;
+
+        allUsers.add(userID);
     }
 
     // Function to add a transaction
@@ -213,6 +220,8 @@ contract ReplayTrackingContract is
         consolidatedByYearTransactions[keyYear].push(
             Transaction(txnId, walletAddress, amount, type_)
         );
+
+        allUsers.add(userID);
     }
 
     // Batch function to increment records for multiple users
@@ -269,5 +278,115 @@ contract ReplayTrackingContract is
     {
         bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
         return consolidatedByYearTransactions[keyYear];
+    }
+
+    // Function to get a summary of a user's records over a specified period (e.g., month, year)
+    function getUserSummary(address userID, uint256 month, uint256 year)
+        public
+        view
+        returns (uint256 totalWatched, uint256 totalEarned)
+    {
+        bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
+        Record memory monthlyRecord = consolidatedByMonth[keyMonth];
+
+        totalWatched = monthlyRecord.timeWatched;
+        totalEarned = monthlyRecord.amountEarned;
+
+        bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
+        Record memory yearlyRecord = consolidatedByYear[keyYear];
+
+        totalWatched += yearlyRecord.timeWatched;
+        totalEarned += yearlyRecord.amountEarned;
+    }
+
+    // Function to get the total number of transactions for a user over a specified period (e.g., month, year)
+    function getTotalTransactionsByUser(address userID, uint256 month, uint256 year)
+        public
+        view
+        returns (uint256 totalTransactions)
+    {
+        bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
+        Transaction[] memory monthlyTransactions = consolidatedByMonthTransactions[keyMonth];
+
+        totalTransactions = monthlyTransactions.length;
+
+        bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
+        Transaction[] memory yearlyTransactions = consolidatedByYearTransactions[keyYear];
+
+        totalTransactions += yearlyTransactions.length;
+    }
+
+    // Event-based approach for off-chain aggregation
+
+    // Function to emit event for off-chain processing of total earnings by all users
+    function emitTotalEarnedByAllUsers(uint256 month, uint256 year) public onlyAdmin {
+        for (uint256 i = 0; i < allUsers.length(); i++) {
+            address user = allUsers.at(i);
+            bytes32 keyMonth = keccak256(abi.encodePacked(user, month, year));
+            bytes32 keyYear = keccak256(abi.encodePacked(user, year));
+            emit RecordIncremented(user, month, year, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
+        }
+    }
+
+    // Function to emit event for off-chain processing of top earners
+    function emitTopEarners(uint256 month, uint256 year) public onlyAdmin {
+        for (uint256 i = 0; i < allUsers.length(); i++) {
+            address user = allUsers.at(i);
+            bytes32 keyMonth = keccak256(abi.encodePacked(user, month, year));
+            bytes32 keyYear = keccak256(abi.encodePacked(user, year));
+            emit RecordIncremented(user, month, year, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
+        }
+    }
+
+    // Function to get detailed information about a specific user based on their wallet address
+    function getUserDetails(address userID)
+        public
+        view
+        returns (
+            uint256 balance,
+            uint256 nonce,
+            uint256 totalWatched,
+            uint256 totalEarned
+        )
+    {
+        balance = wallets[userID];
+        nonce = nonces[userID];
+
+        // Loop through all records and accumulate the total watched and earned for the user
+        for (uint256 year = 2021; year <= 2024; year++) { // Adjust the year range as needed
+            bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
+            Record memory yearlyRecord = consolidatedByYear[keyYear];
+            totalWatched += yearlyRecord.timeWatched;
+            totalEarned += yearlyRecord.amountEarned;
+        }
+    }
+
+    // Function to get a monthly and yearly report for all users' activities
+    function getMonthlyYearlyReport(uint256 month, uint256 year)
+        public
+        view
+        returns (address[] memory users, uint256[] memory monthlyWatched, uint256[] memory monthlyEarned, uint256[] memory yearlyWatched, uint256[] memory yearlyEarned)
+    {
+        uint256 userCount = allUsers.length();
+        users = new address[](userCount);
+        monthlyWatched = new uint256[](userCount);
+        monthlyEarned = new uint256[](userCount);
+        yearlyWatched = new uint256[](userCount);
+        yearlyEarned = new uint256[](userCount);
+
+        for (uint256 i = 0; i < userCount; i++) {
+            address user = allUsers.at(i);
+            users[i] = user;
+
+            bytes32 keyMonth = keccak256(abi.encodePacked(user, month, year));
+            monthlyWatched[i] = consolidatedByMonth[keyMonth].timeWatched;
+            monthlyEarned[i] = consolidatedByMonth[keyMonth].amountEarned;
+
+            bytes32 keyYear = keccak256(abi.encodePacked(user, year));
+            yearlyWatched[i] = consolidatedByYear[keyYear].timeWatched;
+            yearlyEarned[i] = consolidatedByYear[keyYear].amountEarned;
+        }
     }
 }
