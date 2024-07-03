@@ -341,7 +341,7 @@ contract ReplayTrackingContract is
     }
 
     // Function to get detailed information about a specific user based on their wallet address
-    function getUserDetails(address userID)
+    function getUserDetails(address userID, uint256 topYear)
         public
         view
         returns (
@@ -355,7 +355,7 @@ contract ReplayTrackingContract is
         nonce = nonces[userID];
 
         // Loop through all records and accumulate the total watched and earned for the user
-        for (uint256 year = 2021; year <= 2024; year++) { // Adjust the year range as needed
+        for (uint256 year = 2021; year <= topYear; year++) { // Adjust the year range as needed
             bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
             Record memory yearlyRecord = consolidatedByYear[keyYear];
             totalWatched += yearlyRecord.timeWatched;
