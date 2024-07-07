@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts47/security/Pausable.sol";
+import "@openzeppelin/contracts47/access/Ownable.sol";
+import "@openzeppelin/contracts47/access/AccessControl.sol";
+import "@openzeppelin/contracts47/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts47/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts47/utils/Address.sol";
 
 contract ReplayTrackingContract is
     Ownable,
@@ -97,7 +97,7 @@ contract ReplayTrackingContract is
     EnumerableSet.AddressSet private allUsers;
 
     // Constructor function
-    constructor() Ownable(msg.sender) Pausable() {
+    constructor() Ownable() Pausable() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
         emit AdminAdded(msg.sender); // Emit event to confirm role assignment

@@ -1,0 +1,21 @@
+{
+  "name": "replay-tracking",
+  "version": "1.0.0",
+  "description": "This is the replay smart contract designed to track videos whatching and reward users with tokens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Enrique Souza",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts4": "npm:@openzeppelin/contracts@4.9.6",
+    "@openzeppelin/contracts47": "npm:@openzeppelin/contracts@4.7.0",
+    "@openzeppelin/contracts5": "npm:@openzeppelin/contracts@5.0.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "ethers": "^6.13.1",
+    "hardhat": "^2.22.6"
+  }
+}
