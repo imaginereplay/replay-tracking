@@ -38,7 +38,7 @@ async function main() {
   );
   console.log(`Added a transaction for ${userAddress} for June 2023`);
 
-  // Batch increment records
+  // Ensure batchIncrementRecords is not causing reentrancy issues by breaking it out into individual transactions
   const batchData = [
     {
       userID: userAddress,
@@ -55,10 +55,19 @@ async function main() {
       amountEarned: 70,
     },
   ];
-  await contract.batchIncrementRecords(batchData);
-  console.log(
-    `Batch incremented records for ${userAddress} for July and August 2023`
-  );
+
+  for (const data of batchData) {
+    await contract.incrementRecord(
+      data.userID,
+      data.month,
+      data.year,
+      data.timeWatched,
+      data.amountEarned
+    );
+    console.log(
+      `Batch incremented records for ${data.userID} for month ${data.month} and year ${data.year}`
+    );
+  }
 
   // Get consolidated records by month
   const monthRecord = await contract.getConsolidatedByMonth(
