@@ -1,9 +1,10 @@
 const { ethers } = require("hardhat");
+const { v4: uuidv4 } = require("uuid"); // Import the uuid package
 
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // Replace with your deployed contract address
+  const contractAddress = "0x18b7CBdfFA52d1e7BB992fd50f394c5b59E20B72"; // Replace with your deployed contract address
   const ReplayTrackingContract = await ethers.getContractFactory(
     "ReplayTrackingContract"
   );
@@ -55,7 +56,7 @@ async function main() {
             user,
             month,
             year,
-            month + year,
+            uuidv4(), // Use UUID for transaction ID
             user,
             movie.timeWatched / 10,
             "content_type"
@@ -82,8 +83,8 @@ async function main() {
         );
         console.table([
           {
-            watched: monthRecord[0].toString(),
-            earned: monthRecord[1].toString(),
+            timeWatched: monthRecord.timeWatched.toString(),
+            amountEarned: monthRecord.amountEarned.toString(),
             month,
             year,
           },
@@ -99,10 +100,10 @@ async function main() {
         );
         console.table(
           monthTransactions.map((tx) => ({
-            watched: tx[0].toString(),
-            user: tx[1],
-            earned: tx[2].toString(),
-            content: tx[3],
+            txnId: tx.txnId, // UUID is already a string
+            walletAddress: tx.walletAddress,
+            amount: tx.amount.toString(),
+            type: tx.type_,
             month,
             year,
           }))
@@ -116,8 +117,8 @@ async function main() {
       console.log(`Consolidated record for ${userAddress} for year ${year}:`);
       console.table([
         {
-          watched: yearRecord[0].toString(),
-          earned: yearRecord[1].toString(),
+          timeWatched: yearRecord.timeWatched.toString(),
+          amountEarned: yearRecord.amountEarned.toString(),
           year,
         },
       ]);
@@ -129,10 +130,10 @@ async function main() {
       console.log(`Transactions for ${userAddress} for year ${year}:`);
       console.table(
         yearTransactions.map((tx) => ({
-          watched: tx[0].toString(),
-          user: tx[1],
-          earned: tx[2].toString(),
-          content: tx[3],
+          txnId: tx.txnId, // UUID is already a string
+          walletAddress: tx.walletAddress,
+          amount: tx.amount.toString(),
+          type: tx.type_,
           year,
         }))
       );
@@ -143,8 +144,8 @@ async function main() {
     console.log(`User summary for ${userAddress} for June 2023:`);
     console.table([
       {
-        watched: userSummary[0].toString(),
-        earned: userSummary[1].toString(),
+        totalWatched: userSummary.totalWatched.toString(),
+        totalEarned: userSummary.totalEarned.toString(),
         month: 6,
         year: 2023,
       },
@@ -166,10 +167,10 @@ async function main() {
     console.log(`Detailed user information for ${userAddress}:`);
     console.table([
       {
-        balance: userDetails[0].toString(),
-        transactions: userDetails[1].toString(),
-        watched: userDetails[2].toString(),
-        earned: userDetails[3].toString(),
+        balance: userDetails.balance.toString(),
+        nonce: userDetails.nonce.toString(),
+        totalWatched: userDetails.totalWatched.toString(),
+        totalEarned: userDetails.totalEarned.toString(),
         year: 2023,
       },
     ]);

@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // Replace with your deployed contract address
+  const contractAddress = "0x359570B3a0437805D0a71457D61AD26a28cAC9A2"; // Replace with your deployed contract address
   const ReplayTrackingContract = await ethers.getContractFactory(
     "ReplayTrackingContract"
   );

@@ -52,7 +52,7 @@ contract ReplayTrackingContract is
         address user,
         uint256 month,
         uint256 year,
-        uint256 txnId,
+        string txnId,
         address walletAddress,
         uint256 amount,
         string type_
@@ -72,7 +72,7 @@ contract ReplayTrackingContract is
 
     // Struct to represent a transaction
     struct Transaction {
-        uint256 txnId;
+        string txnId;
         address walletAddress;
         uint256 amount;
         string type_; // contentOwner, user, or protocol fees
@@ -194,7 +194,7 @@ contract ReplayTrackingContract is
         address userID,
         uint256 month,
         uint256 year,
-        uint256 txnId,
+        string memory txnId,
         address walletAddress,
         uint256 amount,
         string memory type_
