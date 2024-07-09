@@ -43,8 +43,6 @@ contract ReplayTrackingContract is
         address user,
         uint256 month,
         uint256 year,
-        uint256 day,
-        uint256 movieId,
         uint256 timeWatched,
         uint256 amountEarned
     );
@@ -54,15 +52,11 @@ contract ReplayTrackingContract is
         address user,
         uint256 month,
         uint256 year,
-        uint256 day,
         string txnId,
         address walletAddress,
         uint256 amount,
         string type_
     );
-
-    // Mapping to store records grouped by user, month, year, day, and movieId
-    mapping(bytes32 => Record) public consolidatedByMovie;
 
     // Mapping to store records grouped by user, month, and year
     mapping(bytes32 => Record) public consolidatedByMonth;
@@ -84,24 +78,11 @@ contract ReplayTrackingContract is
         string type_; // contentOwner, user, or protocol fees
     }
 
-    // Struct to represent daily transaction
-    struct DailyTransaction {
-        uint256 day;
-        uint256 month;
-        uint256 year;
-        string txnId;
-        address walletAddress;
-        uint256 amount;
-        string type_;
-    }
-
     // Struct to represent batch increment data
     struct BatchIncrementData {
         address userID;
         uint256 month;
         uint256 year;
-        uint256 day;
-        uint256 movieId;
         uint256 timeWatched;
         uint256 amountEarned;
     }
@@ -111,9 +92,6 @@ contract ReplayTrackingContract is
 
     // Mapping to store transactions grouped by user and year
     mapping(bytes32 => Transaction[]) public consolidatedByYearTransactions;
-
-    // Mapping to store daily transactions grouped by user, month, and year
-    mapping(bytes32 => DailyTransaction[]) public dailyTransactions;
 
     // Set to store all users
     EnumerableSet.AddressSet private allUsers;
@@ -193,23 +171,16 @@ contract ReplayTrackingContract is
         address userID,
         uint256 month,
         uint256 year,
-        uint256 day,
-        uint256 movieId,
         uint256 timeWatched,
         uint256 amountEarned
     ) public onlyAdmin whenNotPaused nonReentrant {
-        bytes32 keyMovie = keccak256(abi.encodePacked(userID, month, year, day, movieId));
         bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
         bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
-
-        // Increment by movie
-        consolidatedByMovie[keyMovie].timeWatched += timeWatched;
-        consolidatedByMovie[keyMovie].amountEarned += amountEarned;
 
         // Increment by month/year
         consolidatedByMonth[keyMonth].timeWatched += timeWatched;
         consolidatedByMonth[keyMonth].amountEarned += amountEarned;
-        emit RecordIncremented(userID, month, year, day, movieId, timeWatched, amountEarned);
+        emit RecordIncremented(userID, month, year, timeWatched, amountEarned);
 
         // Increment by year
         consolidatedByYear[keyYear].timeWatched += timeWatched;
@@ -223,7 +194,6 @@ contract ReplayTrackingContract is
         address userID,
         uint256 month,
         uint256 year,
-        uint256 day,
         string memory txnId,
         address walletAddress,
         uint256 amount,
@@ -231,7 +201,6 @@ contract ReplayTrackingContract is
     ) public onlyAdmin whenNotPaused nonReentrant {
         bytes32 keyMonth = keccak256(abi.encodePacked(userID, month, year));
         bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
-        bytes32 keyDay = keccak256(abi.encodePacked(userID, month, year, day));
 
         // Add transaction by month/year
         consolidatedByMonthTransactions[keyMonth].push(
@@ -241,7 +210,6 @@ contract ReplayTrackingContract is
             userID,
             month,
             year,
-            day,
             txnId,
             walletAddress,
             amount,
@@ -251,11 +219,6 @@ contract ReplayTrackingContract is
         // Add transaction by year
         consolidatedByYearTransactions[keyYear].push(
             Transaction(txnId, walletAddress, amount, type_)
-        );
-
-        // Add daily transaction
-        dailyTransactions[keyDay].push(
-            DailyTransaction(day, month, year, txnId, walletAddress, amount, type_)
         );
 
         allUsers.add(userID);
@@ -271,24 +234,10 @@ contract ReplayTrackingContract is
                 data[i].userID,
                 data[i].month,
                 data[i].year,
-                data[i].day,
-                data[i].movieId,
                 data[i].timeWatched,
                 data[i].amountEarned
             );
         }
-    }
-
-    // Function to get consolidated records by movie
-    function getConsolidatedByMovie(
-        address userID,
-        uint256 month,
-        uint256 year,
-        uint256 day,
-        uint256 movieId
-    ) public view returns (Record memory) {
-        bytes32 keyMovie = keccak256(abi.encodePacked(userID, month, year, day, movieId));
-        return consolidatedByMovie[keyMovie];
     }
 
     // Function to get consolidated records by month
@@ -329,17 +278,6 @@ contract ReplayTrackingContract is
     {
         bytes32 keyYear = keccak256(abi.encodePacked(userID, year));
         return consolidatedByYearTransactions[keyYear];
-    }
-
-    // Function to get daily transactions
-    function getDailyTransactions(
-        address userID,
-        uint256 month,
-        uint256 year,
-        uint256 day
-    ) public view returns (DailyTransaction[] memory) {
-        bytes32 keyDay = keccak256(abi.encodePacked(userID, month, year, day));
-        return dailyTransactions[keyDay];
     }
 
     // Function to get a summary of a user's records over a specified period (e.g., month, year)
@@ -386,8 +324,8 @@ contract ReplayTrackingContract is
             address user = allUsers.at(i);
             bytes32 keyMonth = keccak256(abi.encodePacked(user, month, year));
             bytes32 keyYear = keccak256(abi.encodePacked(user, year));
-            emit RecordIncremented(user, month, year, 0, 0, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
-            emit RecordIncremented(user, month, year, 0, 0, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
         }
     }
 
@@ -397,8 +335,8 @@ contract ReplayTrackingContract is
             address user = allUsers.at(i);
             bytes32 keyMonth = keccak256(abi.encodePacked(user, month, year));
             bytes32 keyYear = keccak256(abi.encodePacked(user, year));
-            emit RecordIncremented(user, month, year, 0, 0, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
-            emit RecordIncremented(user, month, year, 0, 0, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByMonth[keyMonth].timeWatched, consolidatedByMonth[keyMonth].amountEarned);
+            emit RecordIncremented(user, month, year, consolidatedByYear[keyYear].timeWatched, consolidatedByYear[keyYear].amountEarned);
         }
     }
 
