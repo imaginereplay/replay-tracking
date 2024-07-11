@@ -9,7 +9,7 @@ async function main() {
   console.log("Account balance:", ethers.formatEther(balance), "ETH");
 
   const ReplayTrackingContract = await ethers.getContractFactory(
-    "ReplayTrackingContract"
+    "ReplayTrackingContractV2"
   );
   const contract = await ReplayTrackingContract.deploy();
 
