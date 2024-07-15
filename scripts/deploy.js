@@ -1,26 +1,24 @@
-const { ethers } = require("hardhat");
+const { ethers } = require('ethers');
 
-async function main() {
-  const [deployer] = await ethers.getSigners();
-  const provider = deployer.provider;
+const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
+const deployerPrivateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const wallet = new ethers.Wallet(deployerPrivateKey, provider);
 
-  console.log("Deploying contracts with the account:", deployer.address);
-  const balance = await provider.getBalance(deployer.address);
-  console.log("Account balance:", ethers.formatEther(balance), "ETH");
+const ReplayTokenABI = require('../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json').abi;
+const ReplayTokenBytecode = require('../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json').bytecode;
 
-  const ReplayTrackingContract = await ethers.getContractFactory(
-    "ReplayTrackingContractV2"
-  );
-  const contract = await ReplayTrackingContract.deploy();
-
-  await contract.getAddress();
-
-  console.log("Contract deployed to address:", contract.target);
+async function deployContract(contractABI, contractBytecode, constructorArgs = []) {
+  const factory = new ethers.ContractFactory(contractABI, contractBytecode, wallet);
+  const contract = await factory.deploy(...constructorArgs);
+  await contract.waitForDeployment()
+  await contract.getAddress()
+  console.log('Contract deployed to:', contract.target);
+  return contract;
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+async function main() {
+  const replayToken = await deployContract(ReplayTokenABI, ReplayTokenBytecode, []);
+  console.log(replayToken.target)
+}
+
+main().catch(console.error);

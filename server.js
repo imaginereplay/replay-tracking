@@ -16,19 +16,31 @@ const wallet = new ethers.Wallet(
 
 // Contract ABI and Address
 const contractABI = contractJson.abi;
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 
 // Create contract instance
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
-// Routes
+//Routes
 fastify.get("/balance/:address", async (request, reply) => {
   const { address } = request.params;
   try {
+    // Validate the address format
+    if (!ethers.isAddress(address)) {
+      return reply.status(400).send({ error: "Invalid address format" });
+    }
+
+    // Fetch the balance from the contract's wallets mapping
     const balance = await contract.wallets(address);
+
+    // Convert balance to string to ensure proper format in response
     reply.send({ address, balance: balance.toString() });
   } catch (err) {
-    reply.status(500).send(err);
+    // Log the error details for debugging
+    console.error("Error fetching balance:", err);
+
+    // Send the error message in the response
+    reply.status(500).send({ error: err.message });
   }
 });
 
