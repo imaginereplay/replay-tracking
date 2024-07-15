@@ -1,0 +1,167 @@
+### Get Balance
+GET http://localhost:3000/balance/0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7
+Content-Type: application/json
+
+### Add Tokens
+POST http://localhost:3000/addTokens
+Content-Type: application/json
+
+{
+  "address": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "amount": "100"
+}
+
+### Update Balance
+POST http://localhost:3000/updateBalance
+Content-Type: application/json
+
+{
+  "address": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "amount": "200"
+}
+
+### Increment Record
+POST http://localhost:3000/incrementRecord
+Content-Type: application/json
+
+{
+  "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "month": 6,
+  "year": 2024,
+  "day": 10,
+  "movieId": "movie123",
+  "timeWatched": 120,
+  "amountEarned": 5
+}
+
+### Add Transaction
+POST http://localhost:3000/addTransaction
+Content-Type: application/json
+
+{
+  "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "month": 6,
+  "year": 2024,
+  "day": 10,
+  "txnId": "txn123",
+  "walletAddress": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "amount": "50",
+  "type_": "user"
+}
+
+### Batch Increment Records
+POST http://localhost:3000/batchIncrementRecords
+Content-Type: application/json
+
+{
+  "data": [
+    {
+      "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+      "month": 6,
+      "year": 2024,
+      "day": 10,
+      "movieId": "movie123",
+      "timeWatched": 120,
+      "amountEarned": 5
+    },
+    {
+      "userID": "0xAnotherAddress",
+      "month": 6,
+      "year": 2024,
+      "day": 11,
+      "movieId": "movie124",
+      "timeWatched": 150,
+      "amountEarned": 6
+    }
+  ]
+}
+
+### Emit Total Earned By All Users
+POST http://localhost:3000/emitTotalEarnedByAllUsers
+Content-Type: application/json
+
+{
+  "month": 6,
+  "year": 2024
+}
+
+### Emit Top Earners
+POST http://localhost:3000/emitTopEarners
+Content-Type: application/json
+
+{
+  "month": 6,
+  "year": 2024
+}
+
+### Get Consolidated By Movie
+GET http://localhost:3000/getConsolidatedByMovie?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024&day=10&movieId=movie123
+Content-Type: application/json
+
+### Get Consolidated By Month
+GET http://localhost:3000/getConsolidatedByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+Content-Type: application/json
+
+### Get Consolidated By Year
+GET http://localhost:3000/getConsolidatedByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&year=2024
+Content-Type: application/json
+
+### Get Transactions By Month
+GET http://localhost:3000/getTransactionsByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+Content-Type: application/json
+
+### Get Transactions By Year
+GET http://localhost:3000/getTransactionsByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&year=2024
+Content-Type: application/json
+
+### Get Daily Transactions
+GET http://localhost:3000/getDailyTransactions?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024&day=10
+Content-Type: application/json
+
+### Get User Summary
+GET http://localhost:3000/getUserSummary?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+Content-Type: application/json
+
+### Get Total Transactions By User
+GET http://localhost:3000/getTotalTransactionsByUser?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+Content-Type: application/json
+
+### Get User Details
+GET http://localhost:3000/getUserDetails?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&topYear=2024
+Content-Type: application/json
+
+### Get Monthly Yearly Report
+GET http://localhost:3000/getMonthlyYearlyReport?month=6&year=2024
+Content-Type: application/json
+
+### Add Admin
+POST http://localhost:3000/addAdmin
+Content-Type: application/json
+
+{
+  "newAdmin": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+}
+
+### Remove Admin
+POST http://localhost:3000/removeAdmin
+Content-Type: application/json
+
+{
+  "adminToRemove": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+}
+
+### Set Token Admin
+POST http://localhost:3000/setTokenAdmin
+Content-Type: application/json
+
+{
+  "newTokenAdmin": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+}
+
+### Pause
+POST http://localhost:3000/pause
+Content-Type: application/json
+
+### Unpause
+POST http://localhost:3000/unpause
+Content-Type: application/json
