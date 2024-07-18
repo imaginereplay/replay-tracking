@@ -21,6 +21,20 @@ const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 // Create contract instance
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
+const serializeBigInts = (obj) => {
+  const serializedObj = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'bigint') {
+      serializedObj[key] = obj[key].toString();
+    } else if (typeof obj[key] === 'object') {
+      serializedObj[key] = serializeBigInts(obj[key]);
+    } else {
+      serializedObj[key] = obj[key];
+    }
+  }
+  return serializedObj;
+};
+
 //Routes
 fastify.get("/balance/:address", async (request, reply) => {
   const { address } = request.params;
@@ -146,8 +160,16 @@ fastify.post("/emitTopEarners", async (request, reply) => {
 fastify.get("/getConsolidatedByMovie", async (request, reply) => {
   const { userID, month, year, day, movieId } = request.query;
   try {
-    const record = await contract.getConsolidatedByMovie(userID, month, year, day, movieId);
-    reply.send(record);
+    const record = await contract.getConsolidatedByMovie(
+      userID,
+      BigInt(month),
+      BigInt(year),
+      BigInt(day),
+      movieId
+    );
+
+    const serializedRecord = serializeBigInts(record);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -156,8 +178,10 @@ fastify.get("/getConsolidatedByMovie", async (request, reply) => {
 fastify.get("/getConsolidatedByMonth", async (request, reply) => {
   const { userID, month, year } = request.query;
   try {
-    const record = await contract.getConsolidatedByMonth(userID, month, year);
-    reply.send(record);
+    const record = await contract.getConsolidatedByMonth(userID, BigInt(month),
+      BigInt(year));
+    const serializedRecord = serializeBigInts(record);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -166,8 +190,9 @@ fastify.get("/getConsolidatedByMonth", async (request, reply) => {
 fastify.get("/getConsolidatedByYear", async (request, reply) => {
   const { userID, year } = request.query;
   try {
-    const record = await contract.getConsolidatedByYear(userID, year);
-    reply.send(record);
+    const record = await contract.getConsolidatedByYear(userID, BigInt(year));
+    const serializedRecord = serializeBigInts(record);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -176,8 +201,14 @@ fastify.get("/getConsolidatedByYear", async (request, reply) => {
 fastify.get("/getTransactionsByMonth", async (request, reply) => {
   const { userID, month, year } = request.query;
   try {
-    const transactions = await contract.getTransactionsByMonth(userID, month, year);
-    reply.send(transactions);
+    const transactions = await contract.getTransactionsByMonth
+      (
+        userID,
+        BigInt(month),
+        BigInt(year)
+      );
+    const serializedRecord = serializeBigInts(transactions);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -186,8 +217,9 @@ fastify.get("/getTransactionsByMonth", async (request, reply) => {
 fastify.get("/getTransactionsByYear", async (request, reply) => {
   const { userID, year } = request.query;
   try {
-    const transactions = await contract.getTransactionsByYear(userID, year);
-    reply.send(transactions);
+    const transactions = await contract.getTransactionsByYear(userID, BigInt(year));
+    const serializedRecord = serializeBigInts(transactions);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -196,8 +228,9 @@ fastify.get("/getTransactionsByYear", async (request, reply) => {
 fastify.get("/getDailyTransactions", async (request, reply) => {
   const { userID, month, year, day } = request.query;
   try {
-    const transactions = await contract.getDailyTransactions(userID, month, year, day);
-    reply.send(transactions);
+    const transactions = await contract.getDailyTransactions(userID, BigInt(month), BigInt(year), BigInt(day));
+    const serializedRecord = serializeBigInts(transactions);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -206,8 +239,9 @@ fastify.get("/getDailyTransactions", async (request, reply) => {
 fastify.get("/getUserSummary", async (request, reply) => {
   const { userID, month, year } = request.query;
   try {
-    const summary = await contract.getUserSummary(userID, month, year);
-    reply.send(summary);
+    const summary = await contract.getUserSummary(userID, BigInt(month), BigInt(year));
+    const serializedRecord = serializeBigInts(summary);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -216,8 +250,10 @@ fastify.get("/getUserSummary", async (request, reply) => {
 fastify.get("/getTotalTransactionsByUser", async (request, reply) => {
   const { userID, month, year } = request.query;
   try {
-    const totalTransactions = await contract.getTotalTransactionsByUser(userID, month, year);
-    reply.send(totalTransactions);
+    const totalTransactions = await contract.getTotalTransactionsByUser(userID, BigInt(month), BigInt(year));
+
+    const serializedRecord = serializeBigInts(totalTransactions);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -226,8 +262,10 @@ fastify.get("/getTotalTransactionsByUser", async (request, reply) => {
 fastify.get("/getUserDetails", async (request, reply) => {
   const { userID, topYear } = request.query;
   try {
-    const userDetails = await contract.getUserDetails(userID, topYear);
-    reply.send(userDetails);
+    const userDetails = await contract.getUserDetails(userID, BigInt(topYear));
+
+    const serializedRecord = serializeBigInts(userDetails);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }
@@ -236,8 +274,10 @@ fastify.get("/getUserDetails", async (request, reply) => {
 fastify.get("/getMonthlyYearlyReport", async (request, reply) => {
   const { month, year } = request.query;
   try {
-    const report = await contract.getMonthlyYearlyReport(month, year);
-    reply.send(report);
+    const report = await contract.getMonthlyYearlyReport(BigInt(month), BigInt(year));
+
+    const serializedRecord = serializeBigInts(report);
+    reply.send(serializedRecord);
   } catch (err) {
     reply.status(500).send(err);
   }

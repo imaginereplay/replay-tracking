@@ -160,7 +160,7 @@ contract ReplayTrackingContractV2 is
         string memory movieId,
         uint256 timeWatched,
         uint256 amountEarned
-    ) public onlyAdmin whenNotPaused nonReentrant {
+    ) public onlyAdmin whenNotPaused {
         bytes32 keyMovie = ReplayLibrary.encodeKey(
             userID,
             month,
@@ -247,9 +247,10 @@ contract ReplayTrackingContractV2 is
     }
 
     // Batch function to increment records for multiple users
+    // Removed the reentrant since we want to insert in batches and only admin can add
     function batchIncrementRecords(
         ReplayLibrary.BatchIncrementData[] calldata data
-    ) external onlyAdmin whenNotPaused nonReentrant {
+    ) external onlyAdmin whenNotPaused {
         require(data.length <= 100, "Batch size too large");
         for (uint256 i = 0; i < data.length; i++) {
             incrementRecord(
