@@ -333,6 +333,9 @@ contract ReplayTrackingContractV2 is
     }
 
     // Function to get a summary of a user's records over a specified period (e.g., month, year)
+
+    // TO FIX
+    // this math is wrong
     function getUserSummary(
         address userID,
         uint256 month,
