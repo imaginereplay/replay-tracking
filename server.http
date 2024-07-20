@@ -40,9 +40,9 @@ Content-Type: application/json
 
 {
   "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
-  "month": 6,
+  "month": 9,
   "year": 2024,
-  "day": 10,
+  "day": 20,
   "txnId": "txn123",
   "walletAddress": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
   "amount": "50",
@@ -57,21 +57,21 @@ Content-Type: application/json
   "data": [
     {
       "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
-      "month": 6,
+      "month": 12,
       "year": 2024,
-      "day": 10,
+      "day": 21,
       "movieId": "movie123",
-      "timeWatched": 120,
-      "amountEarned": 5
+      "timeWatched": 30,
+      "amountEarned": 500
     },
     {
-      "userID": "0xAnotherAddress",
-      "month": 6,
+      "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+      "month": 11,
       "year": 2024,
-      "day": 11,
+      "day": 19,
       "movieId": "movie124",
-      "timeWatched": 150,
-      "amountEarned": 6
+      "timeWatched": 60,
+      "amountEarned": 873
     }
   ]
 }
