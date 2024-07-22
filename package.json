@@ -4,7 +4,7 @@
   "description": "This is the replay smart contract designed to track videos whatching and reward users with tokens",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "author": "Enrique Souza",
   "license": "ISC",
@@ -18,8 +18,11 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "axios": "^1.7.2",
     "ethers": "^6.13.1",
     "hardhat": "^2.22.6",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0",
+    "vitest": "^2.0.4"
   }
 }
