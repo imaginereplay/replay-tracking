@@ -3,16 +3,16 @@ const fs = require('fs');
 
 const apiUrl = 'http://localhost:3000';
 const testData = {
-  address: '0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7',
-  month: 7,
+  address: '0x495190163716C123C5545Dd1C677D9Eb39513513',
+  month: 4,
   year: 2024,
   day: 20,
   movieId: '300',
   timeWatched: 120,
-  amountEarned: 5,
+  amountEarned: 140,
   batchData: [
     {
-      userID: '0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7',
+      userID: '0x495190163716C123C5545Dd1C677D9Eb39513513',
       month: 7,
       year: 2024,
       day: 20,
@@ -21,7 +21,7 @@ const testData = {
       amountEarned: 500
     },
     {
-      userID: '0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7',
+      userID: '0x495190163716C123C5545Dd1C677D9Eb39513513',
       month: 7,
       year: 2024,
       day: 20,
@@ -40,13 +40,6 @@ const tests = [
     headers: { 'Content-Type': 'application/json' },
     data: { address: testData.address, amount: '100' }
   },
-  // {
-  //   name: 'Update Balance',
-  //   method: 'POST',
-  //   url: `${apiUrl}/updateBalance`,
-  //   headers: { 'Content-Type': 'application/json' },
-  //   data: { address: testData.address, amount: '200' }
-  // },
   {
     name: 'Increment Record',
     method: 'POST',
@@ -170,6 +163,97 @@ const runTests = async () => {
     }
   }
   fs.writeFileSync('tests/reports/report.json', JSON.stringify(results, null, 2));
+
+  // Generate Markdown report
+  let markdownReport = '# Relatório Consolidado\n\n';
+
+  results.forEach(result => {
+    if (result.status === 200 && result.dataReceived) {
+      const data = result.dataReceived;
+      if (result.name.includes('Get Consolidated By Movie')) {
+        markdownReport += `## Consolidated record for ${testData.address} for month ${testData.month} and year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['timeWatched', 'amountEarned', 'month', 'year'], testData.month, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get Consolidated By Month')) {
+        markdownReport += `## Consolidated record for ${testData.address} for month ${testData.month} and year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['timeWatched', 'amountEarned', 'month', 'year'], testData.month, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get Consolidated By Year')) {
+        markdownReport += `## Consolidated record for ${testData.address} for year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['timeWatched', 'amountEarned', 'year'], null, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get Transactions By Month')) {
+        markdownReport += `## Transactions for ${testData.address} for month ${testData.month} and year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['txnId', 'walletAddress', 'amount', 'type_', 'month', 'year'], testData.month, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get Transactions By Year')) {
+        markdownReport += `## Transactions for ${testData.address} for year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['txnId', 'walletAddress', 'amount', 'type_', 'year'], null, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get User Summary')) {
+        markdownReport += `## User summary for ${testData.address} for month ${testData.month} and year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['totalWatched', 'totalEarned', 'month', 'year'], testData.month, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get User Details')) {
+        markdownReport += `## Detailed user information for ${testData.address} for year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateTable(data, ['balance', 'nonce', 'totalWatched', 'totalEarned', 'year'], null, testData.year);
+        markdownReport += '```\n\n';
+      } else if (result.name.includes('Get Monthly Yearly Report')) {
+        markdownReport += `## Monthly and yearly report for month ${testData.month} and year ${testData.year}:\n\`\`\`\n`;
+        markdownReport += generateMonthlyYearlyReport(data);
+        markdownReport += '```\n\n';
+      }
+    }
+  });
+
+  fs.writeFileSync('tests/reports/report.md', markdownReport);
+};
+
+const generateTable = (data, columns, month, year) => {
+  let table = '';
+  const headers = columns.map(col => col.padEnd(15)).join(' | ');
+  table += `${headers}\n`;
+  table += `${columns.map(() => '---------------').join(' | ')}\n`;
+
+  if (Array.isArray(data)) {
+    data.forEach((row, index) => {
+      const rowData = columns.map(col => {
+        if (col === 'month') return String(month).padEnd(15);
+        if (col === 'year') return String(year).padEnd(15);
+        return String(row[col] !== undefined ? row[col] : 'undefined').padEnd(15);
+      }).join(' | ');
+      table += `${rowData}\n`;
+    });
+  } else {
+    const rowData = columns.map(col => {
+      if (col === 'month') return String(month).padEnd(15);
+      if (col === 'year') return String(year).padEnd(15);
+      return String(data[col] !== undefined ? data[col] : 'undefined').padEnd(15);
+    }).join(' | ');
+    table += `${rowData}\n`;
+  }
+
+  return table;
+};
+
+const generateMonthlyYearlyReport = (data) => {
+  let table = '';
+  const headers = ['user', 'monthlyWatched', 'monthlyEarned', 'yearlyWatched', 'yearlyEarned'].map(col => col.padEnd(20)).join(' | ');
+  table += `${headers}\n`;
+  table += `${['user', 'monthlyWatched', 'monthlyEarned', 'yearlyWatched', 'yearlyEarned'].map(() => '-------------------').join(' | ')}\n`;
+
+  data.forEach(row => {
+    const rowData = [
+      row.user,
+      row.monthly.watched,
+      row.monthly.earned,
+      row.yearly.watched,
+      row.yearly.earned
+    ].map(col => String(col).padEnd(20)).join(' | ');
+    table += `${rowData}\n`;
+  });
+
+  return table;
 };
 
 runTests();
