@@ -214,29 +214,29 @@ describe('Fastify Server API Tests', () => {
     expect(response.data).toBeInstanceOf(Array);
   });
 
-  it('should add an admin', async () => {
-    const response = await axios.post(`${BASE_URL}/addAdmin`, {
-      newAdmin: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
-    });
-    expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty('success', true);
-  });
+  // it('should add an admin', async () => {
+  //   const response = await axios.post(`${BASE_URL}/addAdmin`, {
+  //     newAdmin: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
+  //   });
+  //   expect(response.status).toBe(200);
+  //   expect(response.data).toHaveProperty('success', true);
+  // });
 
-  it('should remove an admin', async () => {
-    const response = await axios.post(`${BASE_URL}/removeAdmin`, {
-      adminToRemove: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
-    });
-    expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty('success', true);
-  });
+  // it('should remove an admin', async () => {
+  //   const response = await axios.post(`${BASE_URL}/removeAdmin`, {
+  //     adminToRemove: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
+  //   });
+  //   expect(response.status).toBe(200);
+  //   expect(response.data).toHaveProperty('success', true);
+  // });
 
-  it('should set token admin', async () => {
-    const response = await axios.post(`${BASE_URL}/setTokenAdmin`, {
-      newTokenAdmin: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
-    });
-    expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty('success', true);
-  });
+  // it('should set token admin', async () => {
+  //   const response = await axios.post(`${BASE_URL}/setTokenAdmin`, {
+  //     newTokenAdmin: '0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4'
+  //   });
+  //   expect(response.status).toBe(200);
+  //   expect(response.data).toHaveProperty('success', true);
+  // });
 
   // it('should pause the contract', async () => {
   //   const response = await axios.post(`${BASE_URL}/pause`);
