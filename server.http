@@ -94,12 +94,12 @@ Content-Type: application/json
   "year": 2024
 }
 
-### Get Consolidated By Movie :: FIX
-GET http://localhost:3000/getConsolidatedByMovie?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=7&year=2024&day=20&movieId=300
+### Get Consolidated By Movie
+GET http://localhost:3000/getConsolidatedByMovie?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=8&year=2024&day=10&movieId=300
 Content-Type: application/json
 
 ### Get Consolidated By Month
-GET http://localhost:3000/getConsolidatedByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=7&year=2024
+GET http://localhost:3000/getConsolidatedByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=8&year=2024
 Content-Type: application/json
 
 ### Get Consolidated By Year
@@ -107,7 +107,7 @@ GET http://localhost:3000/getConsolidatedByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E
 Content-Type: application/json
 
 ### Get Transactions By Month
-GET http://localhost:3000/getTransactionsByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=7&year=2024
+GET http://localhost:3000/getTransactionsByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
 Content-Type: application/json
 
 ### Get Transactions By Year
@@ -115,15 +115,15 @@ GET http://localhost:3000/getTransactionsByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E
 Content-Type: application/json
 
 ### Get Daily Transactions
-GET http://localhost:3000/getDailyTransactions?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024&day=10
+GET http://localhost:3000/getDailyTransactions?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024&day=20
 Content-Type: application/json
 
 ### Get User Summary
-GET http://localhost:3000/getUserSummary?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+GET http://localhost:3000/getUserSummary?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
 Content-Type: application/json
 
 ### Get Total Transactions By User
-GET http://localhost:3000/getTotalTransactionsByUser?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=6&year=2024
+GET http://localhost:3000/getTotalTransactionsByUser?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
 Content-Type: application/json
 
 ### Get User Details
@@ -131,7 +131,7 @@ GET http://localhost:3000/getUserDetails?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac
 Content-Type: application/json
 
 ### Get Monthly Yearly Report
-GET http://localhost:3000/getMonthlyYearlyReport?month=6&year=2024
+GET http://localhost:3000/getMonthlyYearlyReport?month=8&year=2024
 Content-Type: application/json
 
 ### Add Admin
