@@ -345,30 +345,38 @@ contract ReplayTrackingContractV2 is
         totalWatched = 0;
         totalEarned = 0;
 
-        // Get the monthly record
-        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
-        if (
-            consolidatedByMonth[keyMonth].timeWatched != 0 ||
-            consolidatedByMonth[keyMonth].amountEarned != 0
-        ) {
+        // Get the monthly record if a specific month is requested
+        if (month != 0) {
+            bytes32 keyMonth = ReplayLibrary.encodeMonthKey(
+                userID,
+                month,
+                year
+            );
             ReplayLibrary.Record memory monthlyRecord = consolidatedByMonth[
                 keyMonth
             ];
-            totalWatched += monthlyRecord.timeWatched;
-            totalEarned += monthlyRecord.amountEarned;
+            totalWatched = monthlyRecord.timeWatched;
+            totalEarned = monthlyRecord.amountEarned;
         }
 
         // Get the yearly record
         bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
-        if (
-            consolidatedByYear[keyYear].timeWatched != 0 ||
-            consolidatedByYear[keyYear].amountEarned != 0
-        ) {
-            ReplayLibrary.Record memory yearlyRecord = consolidatedByYear[
-                keyYear
+        ReplayLibrary.Record memory yearlyRecord = consolidatedByYear[keyYear];
+        totalWatched += yearlyRecord.timeWatched;
+        totalEarned += yearlyRecord.amountEarned;
+
+        // If a specific month is requested, subtract that month's record from the yearly total
+        if (month != 0) {
+            bytes32 keyMonth = ReplayLibrary.encodeMonthKey(
+                userID,
+                month,
+                year
+            );
+            ReplayLibrary.Record memory monthlyRecord = consolidatedByMonth[
+                keyMonth
             ];
-            totalWatched += yearlyRecord.timeWatched;
-            totalEarned += yearlyRecord.amountEarned;
+            totalWatched -= monthlyRecord.timeWatched;
+            totalEarned -= monthlyRecord.amountEarned;
         }
     }
 
