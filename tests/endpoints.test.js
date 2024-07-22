@@ -1,17 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import axios from 'axios';
-import { fastify } from '../server';
 
 const BASE_URL = 'http://localhost:3000';
 
 describe('Fastify Server API Tests', () => {
-
-  it('should fetch the balance of a wallet address', async () => {
-    const response = await axios.get(`${BASE_URL}/balance/0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4`);
-    expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty('address');
-    expect(response.data).toHaveProperty('balance');
-  });
 
   it('should add tokens to a wallet address', async () => {
     const response = await axios.post(`${BASE_URL}/addTokens`, {
@@ -20,6 +12,13 @@ describe('Fastify Server API Tests', () => {
     });
     expect(response.status).toBe(200);
     expect(response.data).toHaveProperty('success', true);
+  });
+
+  it('should fetch the balance of a wallet address', async () => {
+    const response = await axios.get(`${BASE_URL}/balance/0xf6869FD13E4dd1bC532e295b140c7436f4d2B8c4`);
+    expect(response.status).toBe(200);
+    expect(response.data).toHaveProperty('address');
+    expect(response.data).toHaveProperty('balance');
   });
 
   it('should update the balance of a wallet address', async () => {
