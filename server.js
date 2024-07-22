@@ -247,6 +247,10 @@ fastify.get("/getDailyTransactions", async (request, reply) => {
 fastify.get("/getUserSummary", async (request, reply) => {
   const { userID, month, year } = request.query;
   try {
+    if (month < 1 || month > 12) {
+      return reply.status(400).send({ error: "Month must be between 1 and 12" });
+    }
+    
     const summary = await contract.getUserSummary(userID, BigInt(month), BigInt(year));
     const serializedSummary = serializeBigInts({
       totalWatched: summary[0],
@@ -288,18 +292,29 @@ fastify.get("/getMonthlyYearlyReport", async (request, reply) => {
   const { month, year } = request.query;
   try {
     const report = await contract.getMonthlyYearlyReport(BigInt(month), BigInt(year));
-    const serializedReport = {
-      users: report[0],
-      monthlyWatched: report[1].map(watched => watched.toString()),
-      monthlyEarned: report[2].map(earned => earned.toString()),
-      yearlyWatched: report[3].map(watched => watched.toString()),
-      yearlyEarned: report[4].map(earned => earned.toString())
-    };
+
+
+    const [users, monthlyWatched, monthlyEarned, yearlyWatched, yearlyEarned] = report;
+
+
+    const serializedReport = users.map((user, index) => ({
+      user,
+      monthly: {
+        watched: monthlyWatched[index].toString(),
+        earned: monthlyEarned[index].toString()
+      },
+      yearly: {
+        watched: yearlyWatched[index].toString(),
+        earned: yearlyEarned[index].toString()
+      }
+    }));
+
     reply.send(serializedReport);
   } catch (err) {
-    reply.status(500).send(err);
+    reply.status(500).send({ error: err.message });
   }
 });
+
 
 fastify.post("/addAdmin", async (request, reply) => {
   const { newAdmin } = request.body;
