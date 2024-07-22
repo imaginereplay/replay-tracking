@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - api
+      # - main
+      # - 'feature/*'
+  # pull_request:
+  #   branches:
+  #     - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      hardhat:
+        image: ethereum/solc:0.8.24
+        ports:
+          - 8545:8545
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Cache Node.js modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Compile contracts
+      run: npx hardhat compile
+
+    - name: Run Hardhat node in background
+      run: npx hardhat node &
+      shell: bash
+
+    - name: Deploy contracts
+      run: npx hardhat run --network localhost scripts/deploy.js
+
+    - name: Start Fastify server
+      run: npm start &
+
+    - name: Run tests
+      run: npm run test
+
+   

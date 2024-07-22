@@ -4,6 +4,7 @@
   "description": "This is the replay smart contract designed to track videos whatching and reward users with tokens",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "vitest"
   },
   "author": "Enrique Souza",
