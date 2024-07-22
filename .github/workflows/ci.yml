@@ -51,9 +51,10 @@ jobs:
       run: npx hardhat run --network localhost scripts/deploy.js
 
     - name: Start Fastify server
-      run: npm start &
+      run: nohup npm start &
+
+    - name: Wait for Fastify server to start
+      run: sleep 10
 
     - name: Run tests
       run: npm run test
-
-   
