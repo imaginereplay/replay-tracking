@@ -66,7 +66,8 @@ fastify.post("/addTokens", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error adding tokens:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -80,7 +81,8 @@ fastify.post("/updateBalance", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error updating balance:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -100,7 +102,8 @@ fastify.post("/incrementRecord", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error incrementing record:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -121,7 +124,8 @@ fastify.post("/addTransaction", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error adding transaction:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -132,7 +136,8 @@ fastify.post("/batchIncrementRecords", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error in batch increment records:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -143,7 +148,8 @@ fastify.post("/emitTotalEarnedByAllUsers", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error emitting total earned by all users:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -154,7 +160,8 @@ fastify.post("/emitTopEarners", async (request, reply) => {
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error emitting top earners:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -174,7 +181,8 @@ fastify.get("/getConsolidatedByMovie", async (request, reply) => {
     });
     reply.send(serializedRecord);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting consolidated by movie:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -189,7 +197,8 @@ fastify.get("/getConsolidatedByMonth", async (request, reply) => {
     });
     reply.send(serializedRecord);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting consolidated by month:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -203,7 +212,8 @@ fastify.get("/getConsolidatedByYear", async (request, reply) => {
     });
     reply.send(serializedRecord);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting consolidated by year:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -218,7 +228,8 @@ fastify.get("/getTransactionsByMonth", async (request, reply) => {
     const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['txnId', 'walletAddress', 'amount', 'type_'])));
     reply.send(serializedTransactions);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting transactions by month:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -229,7 +240,8 @@ fastify.get("/getTransactionsByYear", async (request, reply) => {
     const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['txnId', 'walletAddress', 'amount', 'type_'])));
     reply.send(serializedTransactions);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting transactions by year:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -240,7 +252,8 @@ fastify.get("/getDailyTransactions", async (request, reply) => {
     const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['day', 'month', 'year', 'txnId', 'walletAddress', 'amount', 'type_'])));
     reply.send(serializedTransactions);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting daily transactions:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -258,7 +271,8 @@ fastify.get("/getUserSummary", async (request, reply) => {
     });
     reply.send(serializedSummary);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting user summary:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -268,7 +282,8 @@ fastify.get("/getTotalTransactionsByUser", async (request, reply) => {
     const totalTransactions = await contract.getTotalTransactionsByUser(userID, BigInt(month), BigInt(year));
     reply.send({ totalTransactions: totalTransactions.toString() });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting total transactions by user:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -284,7 +299,8 @@ fastify.get("/getUserDetails", async (request, reply) => {
     });
     reply.send(serializedDetails);
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error getting user details:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
@@ -292,11 +308,7 @@ fastify.get("/getMonthlyYearlyReport", async (request, reply) => {
   const { month, year } = request.query;
   try {
     const report = await contract.getMonthlyYearlyReport(BigInt(month), BigInt(year));
-
-
     const [users, monthlyWatched, monthlyEarned, yearlyWatched, yearlyEarned] = report;
-
-
     const serializedReport = users.map((user, index) => ({
       user,
       monthly: {
@@ -308,64 +320,73 @@ fastify.get("/getMonthlyYearlyReport", async (request, reply) => {
         earned: yearlyEarned[index].toString()
       }
     }));
-
     reply.send(serializedReport);
   } catch (err) {
+    console.error("Error getting monthly yearly report:", err);
     reply.status(500).send({ error: err.message });
   }
 });
 
-
 fastify.post("/addAdmin", async (request, reply) => {
   const { newAdmin } = request.body;
   try {
+    console.log("Adding admin:", newAdmin);
     const tx = await contract.addAdmin(newAdmin);
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error adding admin:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
 fastify.post("/removeAdmin", async (request, reply) => {
   const { adminToRemove } = request.body;
   try {
+    console.log("Removing admin:", adminToRemove);
     const tx = await contract.removeAdmin(adminToRemove);
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error removing admin:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
 fastify.post("/setTokenAdmin", async (request, reply) => {
   const { newTokenAdmin } = request.body;
   try {
+    console.log("Setting token admin:", newTokenAdmin);
     const tx = await contract.setTokenAdmin(newTokenAdmin);
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error setting token admin:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
 fastify.post("/pause", async (request, reply) => {
   try {
+    console.log("Pausing contract");
     const tx = await contract.pause();
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error pausing contract:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
 fastify.post("/unpause", async (request, reply) => {
   try {
+    console.log("Unpausing contract");
     const tx = await contract.unpause();
     await tx.wait();
     reply.send({ success: true });
   } catch (err) {
-    reply.status(500).send(err);
+    console.error("Error unpausing contract:", err);
+    reply.status(500).send({ error: err.message });
   }
 });
 
