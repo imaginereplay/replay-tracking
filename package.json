@@ -21,7 +21,9 @@
     "@openzeppelin/contracts47": "npm:@openzeppelin/contracts@4.7.0",
     "@openzeppelin/contracts5": "npm:@openzeppelin/contracts@5.0.2",
     "dotenv": "^16.4.5",
+    "ethers": "^6.13.1",
     "fastify": "^4.28.1",
+    "axios": "^1.7.2",
     "hpp": "^0.2.3",
     "sanitize-html": "^2.13.0",
     "uuid": "^10.0.0",
@@ -29,8 +31,6 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "axios": "^1.7.2",
-    "ethers": "^6.13.1",
     "hardhat": "^2.22.6",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0",
