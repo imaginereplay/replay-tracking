@@ -1,1 +1,10 @@
-[] - tirar as tuplas
+[x] - tirar as tuplas
+Adicionar JWT ou XAPI KEY
+Adicionar rate limit
+Adicionar toda a segurança que temos no Aizzy nessa api
+Criar o wrapper de go
+Criar uma interface para exibir esses relatorios (Copiar o front que fizemos no airdrop)
+Adicionar cache no retorno dos gets
+Deploy no heroku
+merge para main
+deploy do contrato no sepolia (base)
