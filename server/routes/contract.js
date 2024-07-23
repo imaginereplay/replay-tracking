@@ -1,5 +1,5 @@
 const { ethers } = require("ethers");
-const contractJson = require("../../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json");
+const contractJson = require("../../contracts/abi.json");
 
 const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545/");
 const wallet = new ethers.Wallet(
