@@ -1,5 +1,5 @@
 ### Get Balance
-GET http://localhost:3000/balance/0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7
+GET http://localhost:3000/balance/0xaBaB20e0511594971787295FAfaf5356E88830B1
 Content-Type: application/json
 
 ### Add Tokens
@@ -7,7 +7,7 @@ POST http://localhost:3000/addTokens
 Content-Type: application/json
 
 {
-  "address": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "address": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
   "amount": "100"
 }
 
@@ -16,7 +16,7 @@ POST http://localhost:3000/updateBalance
 Content-Type: application/json
 
 {
-  "address": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "address": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
   "amount": "200"
 }
 
@@ -25,7 +25,7 @@ POST http://localhost:3000/incrementRecord
 Content-Type: application/json
 
 {
-  "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
   "month": 8,
   "year": 2024,
   "day": 10,
@@ -39,12 +39,12 @@ POST http://localhost:3000/addTransaction
 Content-Type: application/json
 
 {
-  "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
   "month": 9,
   "year": 2024,
   "day": 20,
   "txnId": "txn123",
-  "walletAddress": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+  "walletAddress": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
   "amount": "50",
   "type_": "user"
 }
@@ -56,7 +56,7 @@ Content-Type: application/json
 {
   "data": [
     {
-      "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+      "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
       "month": 12,
       "year": 2024,
       "day": 21,
@@ -65,7 +65,7 @@ Content-Type: application/json
       "amountEarned": 500
     },
     {
-      "userID": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7",
+      "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
       "month": 11,
       "year": 2024,
       "day": 19,
@@ -95,43 +95,43 @@ Content-Type: application/json
 }
 
 ### Get Consolidated By Movie
-GET http://localhost:3000/getConsolidatedByMovie?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=8&year=2024&day=10&movieId=300
+GET http://localhost:3000/getConsolidatedByMovie?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024&day=20&movieId=movie124
 Content-Type: application/json
 
 ### Get Consolidated By Month
-GET http://localhost:3000/getConsolidatedByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=8&year=2024
+GET http://localhost:3000/getConsolidatedByMonth?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024
 Content-Type: application/json
 
 ### Get Consolidated By Year
-GET http://localhost:3000/getConsolidatedByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&year=2024
+GET http://localhost:3000/getConsolidatedByYear?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&year=2024
 Content-Type: application/json
 
 ### Get Transactions By Month
-GET http://localhost:3000/getTransactionsByMonth?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
+GET http://localhost:3000/getTransactionsByMonth?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024
 Content-Type: application/json
 
 ### Get Transactions By Year
-GET http://localhost:3000/getTransactionsByYear?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&year=2024
+GET http://localhost:3000/getTransactionsByYear?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&year=2024
 Content-Type: application/json
 
 ### Get Daily Transactions
-GET http://localhost:3000/getDailyTransactions?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024&day=20
+GET http://localhost:3000/getDailyTransactions?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024&day=20
 Content-Type: application/json
 
 ### Get User Summary
-GET http://localhost:3000/getUserSummary?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
+GET http://localhost:3000/getUserSummary?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=8&year=2024
 Content-Type: application/json
 
 ### Get Total Transactions By User
-GET http://localhost:3000/getTotalTransactionsByUser?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&month=9&year=2024
+GET http://localhost:3000/getTotalTransactionsByUser?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024
 Content-Type: application/json
 
 ### Get User Details
-GET http://localhost:3000/getUserDetails?userID=0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7&topYear=2024
+GET http://localhost:3000/getUserDetails?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&topYear=2024
 Content-Type: application/json
 
 ### Get Monthly Yearly Report
-GET http://localhost:3000/getMonthlyYearlyReport?month=8&year=2024
+GET http://localhost:3000/getMonthlyYearlyReport?month=4&year=2024
 Content-Type: application/json
 
 ### Add Admin
@@ -139,7 +139,7 @@ POST http://localhost:3000/addAdmin
 Content-Type: application/json
 
 {
-  "newAdmin": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+  "newAdmin": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
 }
 
 ### Remove Admin
@@ -147,7 +147,7 @@ POST http://localhost:3000/removeAdmin
 Content-Type: application/json
 
 {
-  "adminToRemove": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+  "adminToRemove": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
 }
 
 ### Set Token Admin
@@ -155,7 +155,7 @@ POST http://localhost:3000/setTokenAdmin
 Content-Type: application/json
 
 {
-  "newTokenAdmin": "0xe0CCdBD21Fce0EC9eB4c23E4CbB3ac678cAf0Dd7"
+  "newTokenAdmin": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
 }
 
 ### Pause
