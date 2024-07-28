@@ -49,7 +49,6 @@ const serverConfig = (fastify) => {
 
   fastify.addHook("onRequest", async (request, reply) => {
     const xApiKey = request.headers["x_api_key"];
-    console.log("xApiKey: ", request);
     if (
       process.env.NODE_ENV !== "development" &&
       (!xApiKey || xApiKey !== process.env.X_API_KEY)
