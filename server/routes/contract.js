@@ -1,23 +1,26 @@
 const { ethers } = require("ethers");
-const contractJson = require("../../contracts/abi.json");
 
-const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545/");
+const provider = new ethers.JsonRpcProvider(
+  "https://base-sepolia-rpc.publicnode.com"
+);
 const wallet = new ethers.Wallet(
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+  "0x675a916e0fa4bfa9435cafb158173059bc3057bbabd11016ede6f3b7d37add3b",
   provider
 );
 
-const contractABI = contractJson.abi;
-const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+const contractABI =
+  require("../../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json").abi;
+
+const contractAddress = "0x34Ab33D879F864F6c350786EE3c7808f46c892Ff";
 
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
 const serializeBigInts = (obj) => {
   const serializedObj = {};
   for (const key in obj) {
-    if (typeof obj[key] === 'bigint') {
+    if (typeof obj[key] === "bigint") {
       serializedObj[key] = obj[key].toString();
-    } else if (typeof obj[key] === 'object') {
+    } else if (typeof obj[key] === "object") {
       serializedObj[key] = serializeBigInts(obj[key]);
     } else {
       serializedObj[key] = obj[key];
@@ -29,7 +32,8 @@ const serializeBigInts = (obj) => {
 const deserializeTuple = (tuple, keys) => {
   const result = {};
   keys.forEach((key, index) => {
-    result[key] = typeof tuple[index] === 'bigint' ? tuple[index].toString() : tuple[index];
+    result[key] =
+      typeof tuple[index] === "bigint" ? tuple[index].toString() : tuple[index];
   });
   return result;
 };
@@ -52,7 +56,10 @@ const contractRoutes = async (app) => {
   app.post("/addTokens", async (request, reply) => {
     const { address, amount } = request.body;
     try {
-      const tx = await contract.addTokens(address, ethers.parseUnits(amount, 18));
+      const tx = await contract.addTokens(
+        address,
+        ethers.parseUnits(amount, 18)
+      );
       await tx.wait();
       reply.send({ success: true });
     } catch (err) {
@@ -167,7 +174,7 @@ const contractRoutes = async (app) => {
       );
       const serializedRecord = serializeBigInts({
         timeWatched: record[0],
-        amountEarned: record[1]
+        amountEarned: record[1],
       });
       reply.send(serializedRecord);
     } catch (err) {
@@ -179,11 +186,14 @@ const contractRoutes = async (app) => {
   app.get("/getConsolidatedByMonth", async (request, reply) => {
     const { userID, month, year } = request.query;
     try {
-      const record = await contract.getConsolidatedByMonth(userID, BigInt(month),
-        BigInt(year));
+      const record = await contract.getConsolidatedByMonth(
+        userID,
+        BigInt(month),
+        BigInt(year)
+      );
       const serializedRecord = serializeBigInts({
         timeWatched: record[0],
-        amountEarned: record[1]
+        amountEarned: record[1],
       });
       reply.send(serializedRecord);
     } catch (err) {
@@ -198,7 +208,7 @@ const contractRoutes = async (app) => {
       const record = await contract.getConsolidatedByYear(userID, BigInt(year));
       const serializedRecord = serializeBigInts({
         timeWatched: record[0],
-        amountEarned: record[1]
+        amountEarned: record[1],
       });
       reply.send(serializedRecord);
     } catch (err) {
@@ -215,7 +225,11 @@ const contractRoutes = async (app) => {
         BigInt(month),
         BigInt(year)
       );
-      const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['txnId', 'walletAddress', 'amount', 'type_'])));
+      const serializedTransactions = transactions.map((tx) =>
+        serializeBigInts(
+          deserializeTuple(tx, ["txnId", "walletAddress", "amount", "type_"])
+        )
+      );
       reply.send(serializedTransactions);
     } catch (err) {
       console.error("Error getting transactions by month:", err);
@@ -226,8 +240,15 @@ const contractRoutes = async (app) => {
   app.get("/getTransactionsByYear", async (request, reply) => {
     const { userID, year } = request.query;
     try {
-      const transactions = await contract.getTransactionsByYear(userID, BigInt(year));
-      const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['txnId', 'walletAddress', 'amount', 'type_'])));
+      const transactions = await contract.getTransactionsByYear(
+        userID,
+        BigInt(year)
+      );
+      const serializedTransactions = transactions.map((tx) =>
+        serializeBigInts(
+          deserializeTuple(tx, ["txnId", "walletAddress", "amount", "type_"])
+        )
+      );
       reply.send(serializedTransactions);
     } catch (err) {
       console.error("Error getting transactions by year:", err);
@@ -238,8 +259,25 @@ const contractRoutes = async (app) => {
   app.get("/getDailyTransactions", async (request, reply) => {
     const { userID, month, year, day } = request.query;
     try {
-      const transactions = await contract.getDailyTransactions(userID, BigInt(month), BigInt(year), BigInt(day));
-      const serializedTransactions = transactions.map(tx => serializeBigInts(deserializeTuple(tx, ['day', 'month', 'year', 'txnId', 'walletAddress', 'amount', 'type_'])));
+      const transactions = await contract.getDailyTransactions(
+        userID,
+        BigInt(month),
+        BigInt(year),
+        BigInt(day)
+      );
+      const serializedTransactions = transactions.map((tx) =>
+        serializeBigInts(
+          deserializeTuple(tx, [
+            "day",
+            "month",
+            "year",
+            "txnId",
+            "walletAddress",
+            "amount",
+            "type_",
+          ])
+        )
+      );
       reply.send(serializedTransactions);
     } catch (err) {
       console.error("Error getting daily transactions:", err);
@@ -251,13 +289,19 @@ const contractRoutes = async (app) => {
     const { userID, month, year } = request.query;
     try {
       if (month < 1 || month > 12) {
-        return reply.status(400).send({ error: "Month must be between 1 and 12" });
+        return reply
+          .status(400)
+          .send({ error: "Month must be between 1 and 12" });
       }
-      
-      const summary = await contract.getUserSummary(userID, BigInt(month), BigInt(year));
+
+      const summary = await contract.getUserSummary(
+        userID,
+        BigInt(month),
+        BigInt(year)
+      );
       const serializedSummary = serializeBigInts({
         totalWatched: summary[0],
-        totalEarned: summary[1]
+        totalEarned: summary[1],
       });
       reply.send(serializedSummary);
     } catch (err) {
@@ -269,7 +313,11 @@ const contractRoutes = async (app) => {
   app.get("/getTotalTransactionsByUser", async (request, reply) => {
     const { userID, month, year } = request.query;
     try {
-      const totalTransactions = await contract.getTotalTransactionsByUser(userID, BigInt(month), BigInt(year));
+      const totalTransactions = await contract.getTotalTransactionsByUser(
+        userID,
+        BigInt(month),
+        BigInt(year)
+      );
       reply.send({ totalTransactions: totalTransactions.toString() });
     } catch (err) {
       console.error("Error getting total transactions by user:", err);
@@ -280,12 +328,15 @@ const contractRoutes = async (app) => {
   app.get("/getUserDetails", async (request, reply) => {
     const { userID, topYear } = request.query;
     try {
-      const userDetails = await contract.getUserDetails(userID, BigInt(topYear));
+      const userDetails = await contract.getUserDetails(
+        userID,
+        BigInt(topYear)
+      );
       const serializedDetails = serializeBigInts({
         balance: userDetails[0],
         nonce: userDetails[1],
         totalWatched: userDetails[2],
-        totalEarned: userDetails[3]
+        totalEarned: userDetails[3],
       });
       reply.send(serializedDetails);
     } catch (err) {
@@ -297,18 +348,27 @@ const contractRoutes = async (app) => {
   app.get("/getMonthlyYearlyReport", async (request, reply) => {
     const { month, year } = request.query;
     try {
-      const report = await contract.getMonthlyYearlyReport(BigInt(month), BigInt(year));
-      const [users, monthlyWatched, monthlyEarned, yearlyWatched, yearlyEarned] = report;
+      const report = await contract.getMonthlyYearlyReport(
+        BigInt(month),
+        BigInt(year)
+      );
+      const [
+        users,
+        monthlyWatched,
+        monthlyEarned,
+        yearlyWatched,
+        yearlyEarned,
+      ] = report;
       const serializedReport = users.map((user, index) => ({
         user,
         monthly: {
           watched: monthlyWatched[index].toString(),
-          earned: monthlyEarned[index].toString()
+          earned: monthlyEarned[index].toString(),
         },
         yearly: {
           watched: yearlyWatched[index].toString(),
-          earned: yearlyEarned[index].toString()
-        }
+          earned: yearlyEarned[index].toString(),
+        },
       }));
       reply.send(serializedReport);
     } catch (err) {
