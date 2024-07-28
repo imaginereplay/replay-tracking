@@ -382,24 +382,36 @@ contract ReplayTrackingContractV2 is
 
     // Function to get the total number of transactions for a user over a specified period (e.g., month, year)
     function getTotalTransactionsByUser(
-        address userID,
-        uint256 month,
-        uint256 year
-    ) public view returns (uint256 totalTransactions) {
-        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
-        ReplayLibrary.Transaction[]
-            memory monthlyTransactions = consolidatedByMonthTransactions[
-                keyMonth
-            ];
+    address userID,
+    uint256 month,
+    uint256 year
+) public view returns (uint256 totalTransactions) {
+    bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
+    ReplayLibrary.Transaction[] memory monthlyTransactions = consolidatedByMonthTransactions[keyMonth];
 
-        totalTransactions = monthlyTransactions.length;
+    bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
+    ReplayLibrary.Transaction[] memory yearlyTransactions = consolidatedByYearTransactions[keyYear];
 
-        bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
-        ReplayLibrary.Transaction[]
-            memory yearlyTransactions = consolidatedByYearTransactions[keyYear];
-
-        totalTransactions += yearlyTransactions.length;
+    if (monthlyTransactions.length == 0 && yearlyTransactions.length == 0) {
+        return 0;
     }
+
+    totalTransactions = monthlyTransactions.length;
+
+    // Calcula o total de transações anuais excluindo as transações mensais duplicadas
+    uint256 uniqueYearlyTransactions = yearlyTransactions.length;
+    for (uint256 i = 0; i < monthlyTransactions.length; i++) {
+        for (uint256 j = 0; j < yearlyTransactions.length; j++) {
+            if (keccak256(abi.encode(monthlyTransactions[i])) == keccak256(abi.encode(yearlyTransactions[j]))) {
+                uniqueYearlyTransactions--;
+                break;
+            }
+        }
+    }
+
+    totalTransactions += uniqueYearlyTransactions;
+}
+
 
     // Event-based approach for off-chain aggregation
 
