@@ -1,0 +1,695 @@
+{
+  "info": {
+    "name": "Replay Smart Tracking",
+    "_postman_id": "12345-abcde-67890-fghij",
+    "description": "API requests for Replay Smart Tracking",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Balance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseHerokuUrl}}/balance/{{address}}",
+          "host": ["{{baseHerokuUrl}}"],
+          "path": ["balance", "{{address}}"]
+        }
+      }
+    },
+    {
+      "name": "Add Tokens",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"{{address}}\",\n  \"amount\": \"200\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/addTokens",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["addTokens"]
+        }
+      }
+    },
+    {
+      "name": "Update Balance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"{{address}}\",\n  \"amount\": \"600\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/updateBalance",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["updateBalance"]
+        }
+      }
+    },
+    {
+      "name": "Increment Record",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userID\": \"{{address}}\",\n  \"month\": 9,\n  \"year\": 2024,\n  \"day\": 19,\n  \"movieId\": \"300\",\n  \"timeWatched\": 200,\n  \"amountEarned\": 300\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/incrementRecord",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["incrementRecord"]
+        }
+      }
+    },
+    {
+      "name": "Add Transaction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userID\": \"0xaBaB20e0511594971787295FAfaf5356E88830B1\",\n  \"month\": 7,\n  \"year\": 2024,\n  \"day\": 20,\n  \"txnId\": \"txn123\",\n  \"walletAddress\": \"0xaBaB20e0511594971787295FAfaf5356E88830B1\",\n  \"amount\": \"70\",\n  \"type_\": \"user\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/addTransaction",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["addTransaction"]
+        }
+      }
+    },
+    {
+      "name": "Batch Increment Records",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"data\": [\n    {\n      \"userID\": \"{{address}}\",\n      \"month\": 10,\n      \"year\": 2024,\n      \"day\": 19,\n      \"movieId\": \"movie123\",\n      \"timeWatched\": 30,\n      \"amountEarned\": 500\n    },\n    {\n      \"userID\": \"0x2dfFF737EB054DED9795d96d6d9B9909896BB940\",\n      \"month\": 10,\n      \"year\": 2024,\n      \"day\": 19,\n      \"movieId\": \"movie124\",\n      \"timeWatched\": 60,\n      \"amountEarned\": 873\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/batchIncrementRecords",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["batchIncrementRecords"]
+        }
+      }
+    },
+    {
+      "name": "Emit Total Earned By All Users",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"month\": 9,\n  \"year\": 2024\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/emitTotalEarnedByAllUsers",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["emitTotalEarnedByAllUsers"]
+        }
+      }
+    },
+    {
+      "name": "Emit Top Earners",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"month\": 9,\n  \"year\": 2024\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/emitTopEarners",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["emitTopEarners"]
+        }
+      }
+    },
+    {
+      "name": "Get Consolidated By Movie",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getConsolidatedByMovie?userID={{address}}&month=9&year=2024&day=19&movieId=300",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getConsolidatedByMovie"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "month",
+              "value": "9"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            },
+            {
+              "key": "day",
+              "value": "19"
+            },
+            {
+              "key": "movieId",
+              "value": "300"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Consolidated By Month",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getConsolidatedByMonth?userID={{address}}&month=9&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getConsolidatedByMonth"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "month",
+              "value": "9"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Consolidated By Year",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getConsolidatedByYear?userID={{address}}&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getConsolidatedByYear"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Transactions By Month",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getTransactionsByMonth?userID={{address}}&month=7&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getTransactionsByMonth"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "month",
+              "value": "7"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Transactions By Year",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getTransactionsByYear?userID={{address}}&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getTransactionsByYear"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Daily Transactions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getDailyTransactions?userID={{address}}&month=9&year=2024&day=20",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getDailyTransactions"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "month",
+              "value": "9"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            },
+            {
+              "key": "day",
+              "value": "20"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get User Summary",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getUserSummary?userID={{address}}&month=10&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getUserSummary"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "month",
+              "value": "10"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Total Transactions By User",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getTotalTransactionsByUser?userID=0xaBaB20e0511594971787295FAfaf5356E88830B1&month=7&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getTotalTransactionsByUser"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
+            },
+            {
+              "key": "month",
+              "value": "7"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get User Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getUserDetails?userID={{address}}&topYear=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getUserDetails"],
+          "query": [
+            {
+              "key": "userID",
+              "value": "{{address}}"
+            },
+            {
+              "key": "topYear",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Monthly Yearly Report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseLocalUrl}}/getMonthlyYearlyReport?month=10&year=2024",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["getMonthlyYearlyReport"],
+          "query": [
+            {
+              "key": "month",
+              "value": "10"
+            },
+            {
+              "key": "year",
+              "value": "2024"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"newAdmin\": \"{{address}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/addAdmin",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["addAdmin"]
+        }
+      }
+    },
+    {
+      "name": "Remove Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"adminToRemove\": \"{{address}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/removeAdmin",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["removeAdmin"]
+        }
+      }
+    },
+    {
+      "name": "Set Token Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"newTokenAdmin\": \"{{address}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/setTokenAdmin",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["setTokenAdmin"]
+        }
+      }
+    },
+    {
+      "name": "Pause",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/pause",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["pause"]
+        }
+      }
+    },
+    {
+      "name": "Unpause",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X_API_KEY",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseLocalUrl}}/unpause",
+          "host": ["{{baseLocalUrl}}"],
+          "path": ["unpause"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiKey",
+      "value": "1jj1k31nfkldcmk13n14nvkldn1vfcj1026104"
+    },
+    {
+      "key": "address",
+      "value": "0x495190163716C123C5545Dd1C677D9Eb39513513"
+    },
+    {
+      "key": "baseHerokuUrl",
+      "value": "https://replay-smart-tracking-605f3b1c61cb.herokuapp.com"
+    },
+    {
+      "key": "baseLocalUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
