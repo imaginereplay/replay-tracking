@@ -1,24 +1,43 @@
-const { ethers } = require('ethers');
+const { ethers } = require("ethers");
+const ReplayTokenABI =
+  require("../contracts/ReplayTrackingContractV2.json").abi;
+const ReplayTokenBytecode =
+  require("../contracts/ReplayTrackingContractV2.json").bytecode;
 
-const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
-const deployerPrivateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
-const wallet = new ethers.Wallet(deployerPrivateKey, provider);
+const provider = new ethers.JsonRpcProvider(
+  "https://base-sepolia-rpc.publicnode.com"
+);
+const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY;
 
-const ReplayTokenABI = require('../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json').abi;
-const ReplayTokenBytecode = require('../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json').bytecode;
+async function deployContract(constructorArgs = []) {
+  const wallet = new ethers.Wallet(deployerPrivateKey, provider);
+  const factory = new ethers.ContractFactory(
+    ReplayTokenABI,
+    ReplayTokenBytecode,
+    wallet
+  );
 
-async function deployContract(contractABI, contractBytecode, constructorArgs = []) {
-  const factory = new ethers.ContractFactory(contractABI, contractBytecode, wallet);
-  const contract = await factory.deploy(...constructorArgs);
-  await contract.waitForDeployment()
-  await contract.getAddress()
-  console.log('Contract deployed to:', contract.target);
+  const feeData = await provider.getFeeData();
+
+  const gasPrice = feeData.gasPrice;
+
+  const contract = await factory.deploy(...constructorArgs, {
+    gasPrice,
+  });
+
+  await contract.waitForDeployment();
+  console.log("Contract deployed to:", contract);
   return contract;
 }
 
+async function checkBalance(wallet) {
+  const balance = await wallet.provider.getBalance(wallet.address);
+  console.log(`Wallet balance: ${ethers.utils.formatEther(balance)} ETH`);
+}
+
 async function main() {
-  const replayToken = await deployContract(ReplayTokenABI, ReplayTokenBytecode, []);
-  console.log(replayToken.target)
+  const replayToken = await deployContract();
+  console.log(replayToken.address);
 }
 
 main().catch(console.error);

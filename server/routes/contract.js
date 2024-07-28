@@ -1,17 +1,16 @@
+const { configDotenv } = require("dotenv");
 const { ethers } = require("ethers");
+configDotenv();
 
 const provider = new ethers.JsonRpcProvider(
   "https://base-sepolia-rpc.publicnode.com"
 );
-const wallet = new ethers.Wallet(
-  "0x675a916e0fa4bfa9435cafb158173059bc3057bbabd11016ede6f3b7d37add3b",
-  provider
-);
+const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY, provider);
 
 const contractABI =
-  require("../../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV2.json").abi;
+  require("../../contracts/ReplayTrackingContractV2.json").abi;
 
-const contractAddress = "0x34Ab33D879F864F6c350786EE3c7808f46c892Ff";
+const contractAddress = process.env.CONTRACT_ADDRESS;
 
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
