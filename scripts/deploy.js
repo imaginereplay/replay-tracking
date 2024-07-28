@@ -1,8 +1,11 @@
+const { configDotenv } = require("dotenv");
 const { ethers } = require("ethers");
 const ReplayTokenABI =
   require("../contracts/ReplayTrackingContractV2.json").abi;
 const ReplayTokenBytecode =
   require("../contracts/ReplayTrackingContractV2.json").bytecode;
+
+configDotenv();
 
 const provider = new ethers.JsonRpcProvider(
   "https://base-sepolia-rpc.publicnode.com"
