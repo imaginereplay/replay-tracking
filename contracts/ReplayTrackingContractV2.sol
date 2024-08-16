@@ -152,118 +152,120 @@ contract ReplayTrackingContractV2 is
     }
 
     // Unified function to increment the time watched and amount earned for a user
-    function incrementRecord(
-        address userID,
-        uint256 month,
-        uint256 year,
-        uint256 day,
-        string memory movieId,
-        uint256 timeWatched,
-        uint256 amountEarned
-    ) public onlyAdmin whenNotPaused {
-        bytes32 keyMovie = ReplayLibrary.encodeKey(
-            userID,
-            month,
-            year,
-            day,
-            movieId
-        );
-        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
-        bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
-
-        // Increment by movie
-        consolidatedByMovie[keyMovie].timeWatched += timeWatched;
-        consolidatedByMovie[keyMovie].amountEarned += amountEarned;
-
-        // Increment by month/year
-        consolidatedByMonth[keyMonth].timeWatched += timeWatched;
-        consolidatedByMonth[keyMonth].amountEarned += amountEarned;
-        emit RecordIncremented(
-            userID,
-            month,
-            year,
-            day,
-            movieId,
-            timeWatched,
-            amountEarned
-        );
-
-        // Increment by year
-        consolidatedByYear[keyYear].timeWatched += timeWatched;
-        consolidatedByYear[keyYear].amountEarned += amountEarned;
-
-        allUsers.add(userID);
-    }
-
-    // Function to add a transaction
-    function addTransaction(
-        address userID,
-        uint256 month,
-        uint256 year,
-        uint256 day,
-        string memory txnId,
-        address walletAddress,
-        uint256 amount,
-        string memory type_
+    function updateRecordAndAddTransaction(
+        ReplayLibrary.UpdateRecordAndTransactionData memory data
     ) public onlyAdmin whenNotPaused nonReentrant {
-        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
-        bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
-        bytes32 keyDay = ReplayLibrary.encodeKey(userID, month, year, day, "0");
+        // Increment Record
+        bytes32 keyMovie = ReplayLibrary.encodeKey(
+            data.userID,
+            data.month,
+            data.year,
+            data.day,
+            data.movieId
+        );
+        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(
+            data.userID,
+            data.month,
+            data.year
+        );
+        bytes32 keyYear = ReplayLibrary.encodeYearKey(data.userID, data.year);
 
-        // Add transaction by month/year
+        consolidatedByMovie[keyMovie].timeWatched += data.timeWatched;
+        consolidatedByMovie[keyMovie].amountEarned += data.amountEarned;
+
+        consolidatedByMonth[keyMonth].timeWatched += data.timeWatched;
+        consolidatedByMonth[keyMonth].amountEarned += data.amountEarned;
+
+        consolidatedByYear[keyYear].timeWatched += data.timeWatched;
+        consolidatedByYear[keyYear].amountEarned += data.amountEarned;
+
+        emit RecordIncremented(
+            data.userID,
+            data.month,
+            data.year,
+            data.day,
+            data.movieId,
+            data.timeWatched,
+            data.amountEarned
+        );
+
+        allUsers.add(data.userID);
+
+        // Add Transaction
         consolidatedByMonthTransactions[keyMonth].push(
-            ReplayLibrary.Transaction(txnId, walletAddress, amount, type_)
+            ReplayLibrary.Transaction(
+                data.txnId,
+                data.walletAddress,
+                data.amount,
+                data.type_
+            )
         );
         emit TransactionAdded(
-            userID,
-            month,
-            year,
-            day,
-            txnId,
-            walletAddress,
-            amount,
-            type_
+            data.userID,
+            data.month,
+            data.year,
+            data.day,
+            data.txnId,
+            data.walletAddress,
+            data.amount,
+            data.type_
         );
 
-        // Add transaction by year
         consolidatedByYearTransactions[keyYear].push(
-            ReplayLibrary.Transaction(txnId, walletAddress, amount, type_)
-        );
-
-        // Add daily transaction
-        dailyTransactions[keyDay].push(
-            ReplayLibrary.DailyTransaction(
-                day,
-                month,
-                year,
-                txnId,
-                walletAddress,
-                amount,
-                type_
+            ReplayLibrary.Transaction(
+                data.txnId,
+                data.walletAddress,
+                data.amount,
+                data.type_
             )
         );
 
-        allUsers.add(userID);
+        bytes32 keyDay = ReplayLibrary.encodeKey(
+            data.userID,
+            data.month,
+            data.year,
+            data.day,
+            "0"
+        );
+        dailyTransactions[keyDay].push(
+            ReplayLibrary.DailyTransaction(
+                data.day,
+                data.month,
+                data.year,
+                data.txnId,
+                data.walletAddress,
+                data.amount,
+                data.type_
+            )
+        );
+
+        allUsers.add(data.userID);
     }
 
-    // Batch function to increment records for multiple users
-    // Removed the reentrant since we want to insert in batches and only admin can add
-    function batchIncrementRecords(
-        ReplayLibrary.BatchIncrementData[] calldata data
-    ) external onlyAdmin whenNotPaused {
-        require(data.length <= 100, "Batch size too large");
-        for (uint256 i = 0; i < data.length; i++) {
-            incrementRecord(
-                data[i].userID,
-                data[i].month,
-                data[i].year,
-                data[i].day,
-                data[i].movieId,
-                data[i].timeWatched,
-                data[i].amountEarned
-            );
-        }
-    }
+    // // Batch function to increment records for multiple users
+    // // Removed the reentrant since we want to insert in batches and only admin can add
+    // function batchIncrementRecords(
+    //     ReplayLibrary.BatchIncrementData[] calldata data
+    // ) external onlyAdmin whenNotPaused {
+    //     require(data.length <= 100, "Batch size too large");
+    //     for (uint256 i = 0; i < data.length; i++) {
+    //         updateRecordAndAddTransaction(
+    //             ReplayLibrary.UpdateRecordAndTransactionData({
+    //                 userID: data[i].userID,
+    //                 month: data[i].month,
+    //                 year: data[i].year,
+    //                 day: data[i].day,
+    //                 movieId: data[i].movieId,
+    //                 timeWatched: data[i].timeWatched,
+    //                 amountEarned: data[i].amountEarned,
+    //                 txnId: data[i].txnId,
+    //                 walletAddress: data[i].walletAddress,
+    //                 amount: data[i].amount,
+    //                 type_: data[i].type_
+    //             })
+    //         );
+    //     }
+    // }
 
     // Function to get consolidated records by movie
     function getConsolidatedByMovie(
@@ -382,36 +384,42 @@ contract ReplayTrackingContractV2 is
 
     // Function to get the total number of transactions for a user over a specified period (e.g., month, year)
     function getTotalTransactionsByUser(
-    address userID,
-    uint256 month,
-    uint256 year
-) public view returns (uint256 totalTransactions) {
-    bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
-    ReplayLibrary.Transaction[] memory monthlyTransactions = consolidatedByMonthTransactions[keyMonth];
+        address userID,
+        uint256 month,
+        uint256 year
+    ) public view returns (uint256 totalTransactions) {
+        bytes32 keyMonth = ReplayLibrary.encodeMonthKey(userID, month, year);
+        ReplayLibrary.Transaction[]
+            memory monthlyTransactions = consolidatedByMonthTransactions[
+                keyMonth
+            ];
 
-    bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
-    ReplayLibrary.Transaction[] memory yearlyTransactions = consolidatedByYearTransactions[keyYear];
+        bytes32 keyYear = ReplayLibrary.encodeYearKey(userID, year);
+        ReplayLibrary.Transaction[]
+            memory yearlyTransactions = consolidatedByYearTransactions[keyYear];
 
-    if (monthlyTransactions.length == 0 && yearlyTransactions.length == 0) {
-        return 0;
-    }
+        if (monthlyTransactions.length == 0 && yearlyTransactions.length == 0) {
+            return 0;
+        }
 
-    totalTransactions = monthlyTransactions.length;
+        totalTransactions = monthlyTransactions.length;
 
-    // Calcula o total de transações anuais excluindo as transações mensais duplicadas
-    uint256 uniqueYearlyTransactions = yearlyTransactions.length;
-    for (uint256 i = 0; i < monthlyTransactions.length; i++) {
-        for (uint256 j = 0; j < yearlyTransactions.length; j++) {
-            if (keccak256(abi.encode(monthlyTransactions[i])) == keccak256(abi.encode(yearlyTransactions[j]))) {
-                uniqueYearlyTransactions--;
-                break;
+        // Calcula o total de transações anuais excluindo as transações mensais duplicadas
+        uint256 uniqueYearlyTransactions = yearlyTransactions.length;
+        for (uint256 i = 0; i < monthlyTransactions.length; i++) {
+            for (uint256 j = 0; j < yearlyTransactions.length; j++) {
+                if (
+                    keccak256(abi.encode(monthlyTransactions[i])) ==
+                    keccak256(abi.encode(yearlyTransactions[j]))
+                ) {
+                    uniqueYearlyTransactions--;
+                    break;
+                }
             }
         }
+
+        totalTransactions += uniqueYearlyTransactions;
     }
-
-    totalTransactions += uniqueYearlyTransactions;
-}
-
 
     // Event-based approach for off-chain aggregation
 
