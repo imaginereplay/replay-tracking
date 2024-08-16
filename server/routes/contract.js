@@ -82,46 +82,41 @@ const contractRoutes = async (app) => {
     }
   });
 
-  app.post("/incrementRecord", async (request, reply) => {
-    const { userID, month, year, day, movieId, timeWatched, amountEarned } =
-      request.body;
-    try {
-      const tx = await contract.incrementRecord(
-        userID,
-        month,
-        year,
-        day,
-        movieId,
-        timeWatched,
-        amountEarned
-      );
-      await tx.wait();
-      reply.send({ success: true });
-    } catch (err) {
-      console.error("Error incrementing record:", err);
-      reply.status(500).send({ error: err.message });
-    }
-  });
+  app.post("/recordAndAddTransaction", async (req, res) => {
+    const {
+      userID,
+      month,
+      year,
+      day,
+      movieId,
+      timeWatched,
+      amountEarned,
+      txnId,
+      walletAddress,
+      amount,
+      type_,
+    } = req.body;
 
-  app.post("/addTransaction", async (request, reply) => {
-    const { userID, month, year, day, txnId, walletAddress, amount, type_ } =
-      request.body;
     try {
-      const tx = await contract.addTransaction(
-        userID,
-        month,
-        year,
-        day,
-        txnId,
-        walletAddress,
-        ethers.parseUnits(amount, 18),
-        type_
-      );
-      await tx.wait();
-      reply.send({ success: true });
-    } catch (err) {
-      console.error("Error adding transaction:", err);
-      reply.status(500).send({ error: err.message });
+      const result = await contract.methods
+        .updateRecordAndAddTransaction(
+          userID,
+          month,
+          year,
+          day,
+          movieId,
+          timeWatched,
+          amountEarned,
+          txnId,
+          walletAddress,
+          amount,
+          type_
+        )
+        .send({ from: adminAddress });
+
+      res.status(200).json({ success: true, result });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
     }
   });
 
