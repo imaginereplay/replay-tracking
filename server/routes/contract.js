@@ -82,7 +82,7 @@ const contractRoutes = async (app) => {
     }
   });
 
-  app.post("/recordAndAddTransaction", async (req, res) => {
+  app.post("/recordAndAddTransaction", async (request, reply) => {
     const {
       userID,
       month,
@@ -95,28 +95,19 @@ const contractRoutes = async (app) => {
       walletAddress,
       amount,
       type_,
-    } = req.body;
+    } = request.body;
+
+    if (!request.body) {
+      reply.status(400).send({ error: "Request body is empty" });
+    }
 
     try {
-      const result = await contract.methods
-        .updateRecordAndAddTransaction(
-          userID,
-          month,
-          year,
-          day,
-          movieId,
-          timeWatched,
-          amountEarned,
-          txnId,
-          walletAddress,
-          amount,
-          type_
-        )
-        .send({ from: adminAddress });
+      const result = await contract.updateRecordAndAddTransaction(request.body);
 
-      res.status(200).json({ success: true, result });
+      reply.send({ success: true, result });
     } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
+      console.error("Error recording and adding transaction:", error);
+      reply.status(500).send({ error: error.message });
     }
   });
 
