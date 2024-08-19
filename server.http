@@ -49,6 +49,26 @@ Content-Type: application/json
   "type_": "user"
 }
 
+
+### Increment Record and Add Transaction
+POST http://localhost:3000/recordAndAddTransaction
+X_API_KEY: 1jj1k31nfkldcmk13n14nvkldn1vfcj1026104
+Content-Type: application/json
+
+{
+  "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
+  "month": 8,
+  "year": 2024,
+  "day": 10,
+  "movieId": "300",
+  "timeWatched": 120,
+  "amountEarned": 5,
+  "txnId": "txn456",
+  "walletAddress": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
+  "amount": 50,
+  "type_": "user"
+}
+
 ### Batch Increment Records
 POST http://localhost:3000/batchIncrementRecords
 Content-Type: application/json
@@ -62,7 +82,11 @@ Content-Type: application/json
       "day": 21,
       "movieId": "movie123",
       "timeWatched": 30,
-      "amountEarned": 500
+      "amountEarned": 500,
+      "txnId": "txn789",
+      "walletAddress": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
+      "amount": 150,
+      "type_": "contentOwner"
     },
     {
       "userID": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
@@ -71,10 +95,15 @@ Content-Type: application/json
       "day": 19,
       "movieId": "movie124",
       "timeWatched": 60,
-      "amountEarned": 873
+      "amountEarned": 873,
+      "txnId": "txn790",
+      "walletAddress": "0xaBaB20e0511594971787295FAfaf5356E88830B1",
+      "amount": 200,
+      "type_": "user"
     }
   ]
 }
+
 
 ### Emit Total Earned By All Users
 POST http://localhost:3000/emitTotalEarnedByAllUsers
