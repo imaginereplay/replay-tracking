@@ -1,5 +1,6 @@
 const { configDotenv } = require("dotenv");
 const { ethers } = require("ethers");
+const {chunkData} = require("../../services/chunk-service");
 configDotenv();
 
 const provider = new ethers.JsonRpcProvider(
@@ -421,6 +422,17 @@ const contractRoutes = async (app) => {
       reply.send({ success: true });
     } catch (err) {
       console.error("Error unpausing contract:", err);
+      reply.status(500).send({ error: err.message });
+    }
+  });
+
+  app.get("/webhook-replay", async (request, reply) => {
+    try {
+      // TODO: Chunk the data and add to blockchainJobs
+      const chunk = await chunkData();
+      reply.send({ success: true });
+    } catch (err) {
+      console.error("Error in webhook replay:", err);
       reply.status(500).send({ error: err.message });
     }
   });
