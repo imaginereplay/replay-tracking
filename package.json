@@ -17,6 +17,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/helmet": "^11.1.1",
     "@fastify/rate-limit": "^9.1.0",
+    "@google-cloud/bigquery": "^7.9.0",
     "@openzeppelin/contracts4": "npm:@openzeppelin/contracts@4.9.6",
     "@openzeppelin/contracts47": "npm:@openzeppelin/contracts@4.7.0",
     "@openzeppelin/contracts5": "npm:@openzeppelin/contracts@5.0.2",
