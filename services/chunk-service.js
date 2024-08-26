@@ -1,4 +1,3 @@
-const { a } = require("vitest/dist/suite-CRLAhsm0.js");
 const BigQueryRepository = require("../repositories/bigquery-repository");
 
 const repository = new BigQueryRepository(process.env.DATASET_ID);
