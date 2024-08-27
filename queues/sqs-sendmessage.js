@@ -6,15 +6,6 @@ const { v4: uuidv4 } = require("uuid");
 /**
  * Envia uma mensagem para a fila SQS.
  *
- * @param {Object} params - Parâmetros para o envio da mensagem.
- * @param {string} params.queueUrl - URL da fila SQS.
- * @param {Object} params.data - Dados a serem enviados na mensagem.
- * @param {string} params.jobId - ID do trabalho associado à mensagem.
- * @param {string} params.chunkId - ID do chunk associado à mensagem.
- * @param {number} [params.delaySeconds=0] - (Opcional) Número de segundos para atrasar o envio da mensagem.
- * @param {string} [params.messageGroupId] - (Opcional) Grupo de mensagens para garantir a ordem.
- * @param {Object} [params.messageAttributes={}] - (Opcional) Atributos da mensagem.
- * @returns {Promise<string>} - O ID da mensagem enviada.
  */
 const sendMessageToQueue = async ({
   queueUrl,
