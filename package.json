@@ -11,6 +11,7 @@
   "author": "Enrique Souza",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.637.0",
     "@fastify/compress": "^7.0.3",
     "@fastify/cookie": "^9.3.1",
     "@fastify/cors": "^9.0.1",
@@ -21,7 +22,6 @@
     "@openzeppelin/contracts4": "npm:@openzeppelin/contracts@4.9.6",
     "@openzeppelin/contracts47": "npm:@openzeppelin/contracts@4.7.0",
     "@openzeppelin/contracts5": "npm:@openzeppelin/contracts@5.0.2",
-    "aws-sdk": "^2.1678.0",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.1",

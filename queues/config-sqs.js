@@ -1,10 +1,11 @@
-import AWS from "aws-sdk";
+const { SQSClient } = require("@aws-sdk/client-sqs");
 
-const sqs = new AWS.SQS({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const sqs = new SQSClient({
   region: process.env.AWS_REGION,
-  apiVersion: process.env.AWS_API_VERSION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
-export default sqs;
+module.exports = sqs;
