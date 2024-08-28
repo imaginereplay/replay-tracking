@@ -22,7 +22,7 @@
     "@openzeppelin/contracts4": "npm:@openzeppelin/contracts@4.9.6",
     "@openzeppelin/contracts47": "npm:@openzeppelin/contracts@4.7.0",
     "@openzeppelin/contracts5": "npm:@openzeppelin/contracts@5.0.2",
-    "axios": "^1.7.2",
+    "axios": "^1.7.5",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.1",
     "fastify": "^4.28.1",
