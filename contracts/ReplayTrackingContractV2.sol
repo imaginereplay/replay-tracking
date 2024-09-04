@@ -5,13 +5,11 @@ import "@openzeppelin/contracts47/security/Pausable.sol";
 import "@openzeppelin/contracts47/access/Ownable.sol";
 import "@openzeppelin/contracts47/access/AccessControl.sol";
 import "@openzeppelin/contracts47/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts47/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts47/utils/Address.sol";
 
 import "./ReplayLibrary.sol";
 
 contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
-    using EnumerableSet for EnumerableSet.AddressSet;
     using Address for address;
 
     using ReplayLibrary for ReplayLibrary.Transaction;
@@ -20,17 +18,14 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     // Nonce for replay attack prevention
-    mapping(address => uint256) public nonces;
+    mapping(string => uint256) public nonces;
 
     // Mapping for storing daily transactions
     mapping(bytes32 => ReplayLibrary.Transaction[]) public dailyTransactions;
 
-    // Set to store all users
-    EnumerableSet.AddressSet private allUsers;
-
     // Event emitted when a transaction is added
     event TransactionAdded(
-        address indexed userId,
+        string indexed userId,
         uint256 indexed day,
         uint256 indexed month,
         uint256 year,
@@ -40,7 +35,6 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         uint256 totalRewardsContentOwner
     );
 
-    // Constructor function
     constructor() Ownable() Pausable() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
@@ -96,15 +90,12 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
                 txn.totalRewardsConsumer,
                 txn.totalRewardsContentOwner
             );
-
-            // Add the user to the allUsers set
-            allUsers.add(txn.userId);
         }
     }
 
     // Function to get transactions by a specific day
     function getTransactionsByDay(
-        address userId,
+        string memory userId,
         uint256 day,
         uint256 month,
         uint256 year,

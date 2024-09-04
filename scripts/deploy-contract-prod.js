@@ -1,9 +1,10 @@
 const { configDotenv } = require("dotenv");
 const { ethers } = require("ethers");
+
 const ReplayTokenABI =
-  require("../contracts/ReplayTrackingContractV2.json").abi;
+  require("../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV3.json").abi;
 const ReplayTokenBytecode =
-  require("../contracts/ReplayTrackingContractV2.json").bytecode;
+  require("../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV3.json").bytecode;
 
 configDotenv();
 

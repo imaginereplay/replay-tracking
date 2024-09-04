@@ -2,9 +2,8 @@
 pragma solidity ^0.8.24;
 
 library ReplayLibrary {
-
     struct Transaction {
-        address userId;
+        string userId;
         uint256 day;
         uint256 month;
         uint256 year;
@@ -15,7 +14,7 @@ library ReplayLibrary {
     }
 
     function encodeKey(
-        address userId,
+        string memory userId,
         uint256 day,
         uint256 month,
         uint256 year,
