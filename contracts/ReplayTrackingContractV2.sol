@@ -6,12 +6,10 @@ import "@openzeppelin/contracts47/access/Ownable.sol";
 import "@openzeppelin/contracts47/access/AccessControl.sol";
 import "@openzeppelin/contracts47/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts47/utils/Address.sol";
-
 import "./ReplayLibrary.sol";
 
 contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
     using Address for address;
-
     using ReplayLibrary for ReplayLibrary.Transaction;
 
     // Define roles
@@ -22,6 +20,8 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
 
     // Mapping for storing daily transactions
     mapping(bytes32 => ReplayLibrary.Transaction[]) public dailyTransactions;
+    
+    bytes32[] public transactionKeys;
 
     // Event emitted when a transaction is added
     event TransactionAdded(
@@ -41,10 +41,7 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
     }
 
     modifier onlyAdmin() {
-        require(
-            hasRole(ADMIN_ROLE, msg.sender),
-            "Only admin can call this function"
-        );
+        require(hasRole(ADMIN_ROLE, msg.sender), "Only admin can call this function");
         _;
     }
 
@@ -67,7 +64,7 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         for (uint256 i = 0; i < transactions.length; i++) {
             ReplayLibrary.Transaction memory txn = transactions[i];
 
-            // Create a unique key for the transaction day
+            // Cria uma chave única para o dia da transação
             bytes32 keyDay = ReplayLibrary.encodeKey(
                 txn.userId,
                 txn.day,
@@ -76,10 +73,15 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
                 txn.assetId
             );
 
-            // Add the transaction to the dailyTransactions mapping
+            // Verifica se a chave já foi registrada
+            if (dailyTransactions[keyDay].length == 0) {
+                transactionKeys.push(keyDay); // Armazena a chave se for nova
+            }
+
+            // Adiciona a transação ao mapeamento de transações diárias
             dailyTransactions[keyDay].push(txn);
 
-            // Emit an event for the transaction added
+            // Emite o evento
             emit TransactionAdded(
                 txn.userId,
                 txn.day,
@@ -93,7 +95,173 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         }
     }
 
-    // Function to get transactions by a specific day
+
+    function getTransactionsByUserId(
+        string memory userId
+    ) public view returns (ReplayLibrary.Transaction[] memory) {
+        uint256 totalTransactions = 0;
+
+        // Primeiro, contar o número de transações correspondentes
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Verifica se o userId da transação corresponde
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId))) {
+                totalTransactions += transactions.length;
+            }
+        }
+
+        // Inicializa um array com o tamanho correto
+        ReplayLibrary.Transaction[] memory allTransactions = new ReplayLibrary.Transaction[](totalTransactions);
+        uint256 index = 0;
+
+        // Agora, popula o array com as transações
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Adiciona transações correspondentes ao array
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId))) {
+                for (uint256 j = 0; j < transactions.length; j++) {
+                    allTransactions[index] = transactions[j];
+                    index++;
+                }
+            }
+        }
+
+        return allTransactions;
+    }
+
+    function getTransactionsByUserIdAndAssetId(
+        string memory userId,
+        string memory assetId
+    ) public view returns (ReplayLibrary.Transaction[] memory) {
+        uint256 totalTransactions = 0;
+
+        // Primeiro, contar o número de transações correspondentes
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Verifica se o userId e assetId da transação correspondem
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId)) &&
+                keccak256(bytes(transactions[0].assetId)) == keccak256(bytes(assetId))) {
+                totalTransactions += transactions.length;
+            }
+        }
+
+        // Inicializa um array com o tamanho correto
+        ReplayLibrary.Transaction[] memory allTransactions = new ReplayLibrary.Transaction[](totalTransactions);
+        uint256 index = 0;
+
+        // Agora, popula o array com as transações
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Adiciona transações correspondentes ao array
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId)) &&
+                keccak256(bytes(transactions[0].assetId)) == keccak256(bytes(assetId))) {
+                for (uint256 j = 0; j < transactions.length; j++) {
+                    allTransactions[index] = transactions[j];
+                    index++;
+                }
+            }
+        }
+
+        return allTransactions;
+    }
+
+    function getTransactionsByUserAndDate(
+        string memory userId,
+        uint256 day,
+        uint256 month,
+        uint256 year
+    ) public view returns (ReplayLibrary.Transaction[] memory) {
+        uint256 totalTransactions = 0;
+
+        // Primeiro, contar o número de transações correspondentes
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Verifica se o userId e a data da transação correspondem
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId)) &&
+                transactions[0].day == day &&
+                transactions[0].month == month &&
+                transactions[0].year == year) {
+                totalTransactions += transactions.length;
+            }
+        }
+
+        // Inicializa um array com o tamanho correto
+        ReplayLibrary.Transaction[] memory allTransactions = new ReplayLibrary.Transaction[](totalTransactions);
+        uint256 index = 0;
+
+        // Agora, popula o array com as transações
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Adiciona transações correspondentes ao array
+            if (keccak256(bytes(transactions[0].userId)) == keccak256(bytes(userId)) &&
+                transactions[0].day == day &&
+                transactions[0].month == month &&
+                transactions[0].year == year) {
+                for (uint256 j = 0; j < transactions.length; j++) {
+                    allTransactions[index] = transactions[j];
+                    index++;
+                }
+            }
+        }
+
+        return allTransactions;
+    }
+
+    function getTransactionsByCreatedAt(
+        uint256 day,
+        uint256 month,
+        uint256 year
+    ) public view returns (ReplayLibrary.Transaction[] memory) {
+        uint256 totalTransactions = 0;
+
+        // Primeiro, contar o número de transações correspondentes
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Verifica se a data da transação corresponde
+            if (transactions[0].day == day &&
+                transactions[0].month == month &&
+                transactions[0].year == year) {
+                totalTransactions += transactions.length;
+            }
+        }
+
+        // Inicializa um array com o tamanho correto
+        ReplayLibrary.Transaction[] memory allTransactions = new ReplayLibrary.Transaction[](totalTransactions);
+        uint256 index = 0;
+
+        // Agora, popula o array com as transações
+        for (uint256 i = 0; i < transactionKeys.length; i++) {
+            bytes32 key = transactionKeys[i];
+            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
+
+            // Adiciona transações correspondentes ao array
+            if (transactions[0].day == day &&
+                transactions[0].month == month &&
+                transactions[0].year == year) {
+                for (uint256 j = 0; j < transactions.length; j++) {
+                    allTransactions[index] = transactions[j];
+                    index++;
+                }
+            }
+        }
+
+        return allTransactions;
+    }
+
     function getTransactionsByDay(
         string memory userId,
         uint256 day,

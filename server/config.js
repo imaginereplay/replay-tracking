@@ -26,9 +26,6 @@ const serverConfig = (fastify) => {
   // Helmet for security headers
   fastify.register(helmet);
 
-  // Compression for response
-  fastify.register(compress, { global: true });
-
   fastify.addHook("preHandler", (request, reply, done) => {
     hpp();
     done();

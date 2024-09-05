@@ -1,3 +1,34 @@
+# Buscar transações por userID e createdAt (data específica)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&day=4&month=9&year=2024
+Content-Type: application/json
+
+###
+# Buscar transações por userID, assetID e createdAt (data específica)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&assetID=644c11d4eece445c3463a152&day=4&month=9&year=2024
+Content-Type: application/json
+
+###
+# Buscar transações apenas por userID
+GET http://localhost:3000/getTransactions?userID=6433052c79cd3b7d4c054d45
+Content-Type: application/json
+
+###
+# Buscar transações apenas por createdAt (data específica)
+GET http://localhost:3000/getTransactions?day=3&month=9&year=2024
+Content-Type: application/json
+
+###
+# Buscar transações por userID e assetID (sem filtrar por data)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&assetID=647658e919b7ecfcbee33fed
+Content-Type: application/json
+
+
+
+
+
+
+
+
 ### Get Balance
 GET http://localhost:3000/balance/0xaBaB20e0511594971787295FAfaf5356E88830B1
 Content-Type: application/json

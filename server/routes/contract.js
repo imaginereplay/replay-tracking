@@ -1,15 +1,12 @@
 const { configDotenv } = require("dotenv");
 const { ethers } = require("ethers");
-const processData = require("../../services/chunk-service");
 configDotenv();
 
-const provider = new ethers.JsonRpcProvider(
-  "https://base-sepolia-rpc.publicnode.com"
-);
+const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY, provider);
 
 const contractABI =
-  require("../../contracts/ReplayTrackingContractV2.json").abi;
+  require("../../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV3.json").abi;
 
 const contractAddress = process.env.CONTRACT_ADDRESS;
 
@@ -39,6 +36,74 @@ const deserializeTuple = (tuple, keys) => {
 };
 
 const contractRoutes = async (app) => {
+  app.get("/getTransactions", async (request, reply) => {
+    const { userID, assetID, day, month, year } = request.query;
+
+    try {
+      let transactions;
+
+      if (userID && day && month && year && assetID) {
+        // Get transactions by userId, assetId, and createdAt
+        transactions = await contract.getTransactionsByDay(
+          userID,
+          BigInt(day),
+          BigInt(month),
+          BigInt(year),
+          assetID
+        );
+      } else if (userID && assetID) {
+        // Get transactions by userId and assetId
+        transactions = await contract.getTransactionsByUserIdAndAssetId(
+          userID,
+          assetID
+        );
+      } else if (userID && day && month && year) {
+        // Get transactions by userId and createdAt
+        transactions = await contract.getTransactionsByUserAndDate(
+          userID,
+          BigInt(day),
+          BigInt(month),
+          BigInt(year)
+        );
+      } else if (userID) {
+        // Get transactions by userId only
+        transactions = await contract.getTransactionsByUserId(userID);
+      } else if (day && month && year) {
+        transactions = await contract.getTransactionsByCreatedAt(
+          BigInt(day),
+          BigInt(month),
+          BigInt(year)
+        );
+      } else {
+        return reply.status(400).send({ error: "Invalid query parameters" });
+      }
+
+      console.log("Transactions before:", transactions);
+
+      if (transactions.length === 0) {
+        reply.status(404).send({ error: "No transactions found" });
+      } else {
+        const serializedTransactions = transactions.map((txn) => ({
+          userId: txn[0],
+          day: txn[1].toString(),
+          month: txn[2].toString(),
+          year: txn[3].toString(),
+          totalDuration: txn[4].toString(),
+          totalRewardsConsumer: txn[5].toString(),
+          totalRewardsContentOwner: txn[6].toString(),
+          assetId: txn[7],
+        }));
+
+        console.log("Transactions after:", serializedTransactions);
+
+        reply.send(serializedTransactions);
+      }
+    } catch (err) {
+      console.error("Error getting transactions:", err);
+      reply.status(500).send({ error: err.message });
+    }
+  });
+
   app.get("/balance/:address", async (request, reply) => {
     const { address } = request.params;
     try {
@@ -429,10 +494,10 @@ const contractRoutes = async (app) => {
   app.post("/webhook-replay", async (request, reply) => {
     const { data } = request.body;
     try {
-      const processing = await processData(data); 
+      const processing = await processData(data);
       reply.send({
         success: true,
-        processing
+        processing,
       });
     } catch (err) {
       console.error("Error in webhook replay:", err);
