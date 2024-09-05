@@ -7,8 +7,7 @@ const provider = new ethers.JsonRpcProvider(
 );
 const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY, provider);
 
-const contractABI =
-  require("../../artifacts/contracts/ReplayTrackingContractV2.sol/ReplayTrackingContractV3.json").abi;
+const contractABI = require("../abi.json").abi;
 
 const contractAddress = process.env.CONTRACT_ADDRESS;
 
