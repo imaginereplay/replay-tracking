@@ -219,49 +219,6 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         return allTransactions;
     }
 
-    function getTransactionsByCreatedAt(
-        uint256 day,
-        uint256 month,
-        uint256 year
-    ) public view returns (ReplayLibrary.Transaction[] memory) {
-        uint256 totalTransactions = 0;
-
-        // Primeiro, contar o número de transações correspondentes
-        for (uint256 i = 0; i < transactionKeys.length; i++) {
-            bytes32 key = transactionKeys[i];
-            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
-
-            // Verifica se a data da transação corresponde
-            if (transactions[0].day == day &&
-                transactions[0].month == month &&
-                transactions[0].year == year) {
-                totalTransactions += transactions.length;
-            }
-        }
-
-        // Inicializa um array com o tamanho correto
-        ReplayLibrary.Transaction[] memory allTransactions = new ReplayLibrary.Transaction[](totalTransactions);
-        uint256 index = 0;
-
-        // Agora, popula o array com as transações
-        for (uint256 i = 0; i < transactionKeys.length; i++) {
-            bytes32 key = transactionKeys[i];
-            ReplayLibrary.Transaction[] storage transactions = dailyTransactions[key];
-
-            // Adiciona transações correspondentes ao array
-            if (transactions[0].day == day &&
-                transactions[0].month == month &&
-                transactions[0].year == year) {
-                for (uint256 j = 0; j < transactions.length; j++) {
-                    allTransactions[index] = transactions[j];
-                    index++;
-                }
-            }
-        }
-
-        return allTransactions;
-    }
-
     function getTransactionsByDay(
         string memory userId,
         uint256 day,

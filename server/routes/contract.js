@@ -68,12 +68,6 @@ const contractRoutes = async (app) => {
       } else if (userID) {
         // Get transactions by userId only
         transactions = await contract.getTransactionsByUserId(userID);
-      } else if (day && month && year) {
-        transactions = await contract.getTransactionsByCreatedAt(
-          BigInt(day),
-          BigInt(month),
-          BigInt(year)
-        );
       } else {
         return reply.status(400).send({ error: "Invalid query parameters" });
       }
