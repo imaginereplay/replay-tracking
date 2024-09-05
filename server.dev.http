@@ -1,0 +1,67 @@
+# Buscar transações por userID e createdAt (data específica)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&day=4&month=9&year=2024
+Content-Type: application/json
+X_API_KEY:
+
+###
+# Buscar transações por userID, assetID e createdAt (data específica)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&assetID=64653e1079cd3b7d4c055841&day=4&month=9&year=2024
+Content-Type: application/json
+X_API_KEY:
+
+###
+# Buscar transações apenas por userID
+GET http://localhost:3000/getTransactions?userID=6433052c79cd3b7d4c054d45
+Content-Type: application/json
+X_API_KEY:
+
+# ###
+# # Buscar transações apenas por createdAt (data específica)
+# GET http://localhost:3000/getTransactions?day=3&month=9&year=2024
+# Content-Type: application/json
+# X_API_KEY:
+
+###
+# Buscar transações por userID e assetID (sem filtrar por data)
+GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&assetID=64653e1079cd3b7d4c055841
+Content-Type: application/json
+X_API_KEY:
+
+### Add Admin
+POST http://localhost:3000/addAdmin
+Content-Type: application/json
+X_API_KEY:
+
+{
+  "newAdmin": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
+}
+
+### Remove Admin
+POST http://localhost:3000/removeAdmin
+Content-Type: application/json
+X_API_KEY:
+
+{
+  "adminToRemove": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
+}
+
+### Set Token Admin
+POST http://localhost:3000/setTokenAdmin
+Content-Type: application/json
+X_API_KEY:
+
+{
+  "newTokenAdmin": "0xaBaB20e0511594971787295FAfaf5356E88830B1"
+}
+
+### Pause
+POST http://localhost:3000/pause
+Content-Type: application/json
+X_API_KEY:
+
+{}
+
+### Unpause
+POST http://localhost:3000/unpause
+Content-Type: application/json
+X_API_KEY:
