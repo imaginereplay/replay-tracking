@@ -9,7 +9,7 @@ const ReplayTokenBytecode =
 configDotenv();
 
 const provider = new ethers.JsonRpcProvider(
-  "https://base-sepolia-rpc.publicnode.com"
+  "https://curtis.rpc.caldera.xyz/http"
 );
 const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY;
 
