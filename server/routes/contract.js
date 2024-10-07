@@ -44,7 +44,7 @@ const contractRoutes = async (app) => {
       const userHistories = await contract.getUserHistories(userId);
 
       if (!userHistories || userHistories.length === 0) {
-        return reply.status(404).send({ error: "Nenhum histórico encontrado para este usuário." });
+        return reply.status(404).send({ error: "No history found for this user." });
       }
 
       const serializedHistories = userHistories.map((history) => ({
@@ -55,8 +55,8 @@ const contractRoutes = async (app) => {
 
       reply.send(serializedHistories);
     } catch (err) {
-      console.error("Erro ao buscar o histórico do usuário:", err);
-      reply.status(500).send({ error: "Erro ao buscar o histórico do usuário" });
+      console.error("Error fetching user history:", err);
+      reply.status(500).send({ error: "Error fetching user history" });
     }
   });
 
