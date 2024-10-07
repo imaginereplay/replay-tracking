@@ -20,7 +20,7 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
 
     // Mapping for storing daily transactions
     mapping(bytes32 => ReplayLibrary.Transaction[]) public dailyTransactions;
-    
+
     bytes32[] public transactionKeys;
 
     // Event emitted when a transaction is added
@@ -35,13 +35,24 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         uint256 totalRewardsContentOwner
     );
 
+    struct UserHistory {
+        uint256 totalDuration;
+        uint256 totalRewardsConsumer;
+        uint256 totalRewardsContentOwner;
+    }
+
+    mapping(bytes32 => UserHistory[]) public userHistories;
+
     constructor() Ownable() Pausable() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
     }
 
     modifier onlyAdmin() {
-        require(hasRole(ADMIN_ROLE, msg.sender), "Only admin can call this function");
+        require(
+            hasRole(ADMIN_ROLE, msg.sender),
+            "Only admin can call this function"
+        );
         _;
     }
 
@@ -95,6 +106,39 @@ contract ReplayTrackingContractV3 is Ownable, Pausable, AccessControl {
         }
     }
 
+    function insertUserHistory(
+        string[] calldata userIds,
+        uint256[] calldata totalDurations,
+        uint256[] calldata totalRewardsConsumers,
+        uint256[] calldata totalRewardsContentOwners
+    ) external onlyAdmin whenNotPaused {
+        require(
+            userIds.length == totalDurations.length &&
+                totalDurations.length == totalRewardsConsumers.length &&
+                totalRewardsConsumers.length ==
+                totalRewardsContentOwners.length,
+            "Arrays devem ter o mesmo tamanho"
+        );
+
+        for (uint256 i = 0; i < userIds.length; i++) {
+            bytes32 userKey = keccak256(abi.encodePacked(userIds[i]));
+
+            UserHistory memory history = UserHistory({
+                totalDuration: totalDurations[i],
+                totalRewardsConsumer: totalRewardsConsumers[i],
+                totalRewardsContentOwner: totalRewardsContentOwners[i]
+            });
+
+            userHistories[userKey].push(history);
+        }
+    }
+
+    function getUserHistories(
+        string memory userId
+    ) public view returns (UserHistory[] memory) {
+        bytes32 userKey = keccak256(abi.encodePacked(userId));
+        return userHistories[userKey];
+    }
 
     function getTransactionsByUserId(
         string memory userId

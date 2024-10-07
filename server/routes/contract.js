@@ -3,7 +3,7 @@ const { ethers } = require("ethers");
 configDotenv();
 
 const provider = new ethers.JsonRpcProvider(
-  "https://base-sepolia-rpc.publicnode.com"
+  "https://curtis.rpc.caldera.xyz/http"
 );
 const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY, provider);
 
@@ -37,6 +37,29 @@ const deserializeTuple = (tuple, keys) => {
 };
 
 const contractRoutes = async (app) => {
+
+  app.get("/getUserHistories/:userId", async (request, reply) => {
+    const { userId } = request.params;
+    try {
+      const userHistories = await contract.getUserHistories(userId);
+
+      if (!userHistories || userHistories.length === 0) {
+        return reply.status(404).send({ error: "Nenhum histórico encontrado para este usuário." });
+      }
+
+      const serializedHistories = userHistories.map((history) => ({
+        totalDuration: history.totalDuration.toString(),
+        totalRewardsConsumer: history.totalRewardsConsumer.toString(),
+        totalRewardsContentOwner: history.totalRewardsContentOwner.toString(),
+      }));
+
+      reply.send(serializedHistories);
+    } catch (err) {
+      console.error("Erro ao buscar o histórico do usuário:", err);
+      reply.status(500).send({ error: "Erro ao buscar o histórico do usuário" });
+    }
+  });
+
   app.get("/getTransactions", async (request, reply) => {
     const { userID, assetID, day, month, year } = request.query;
 

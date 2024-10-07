@@ -4,6 +4,12 @@ Content-Type: application/json
 X_API_KEY:
 
 ###
+
+GET http://localhost:3000/getUserHistories/62ebec8445b650360bdd8cfb
+Content-Type: application/json
+X_API_KEY:
+
+###
 # Buscar transações por userID, assetID e createdAt (data específica)
 GET http://localhost:3000/getTransactions?userID=65d1aa5090f536899ffd9baf&assetID=64653e1079cd3b7d4c055841&day=4&month=9&year=2024
 Content-Type: application/json
