@@ -50,7 +50,6 @@ const contractRoutes = async (app) => {
       const serializedHistories = userHistories.map((history) => ({
         totalDuration: history.totalDuration.toString(),
         totalRewardsConsumer: history.totalRewardsConsumer.toString(),
-        totalRewardsContentOwner: history.totalRewardsContentOwner.toString(),
       }));
 
       reply.send(serializedHistories);
