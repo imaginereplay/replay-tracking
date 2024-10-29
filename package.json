@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "hardhat": "^2.22.6",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0",
